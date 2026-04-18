@@ -51,16 +51,19 @@ export class FiliereManagement implements OnInit {
     this.isTableLoading = true;
     this.errorMessage = '';
     this.filiereService.getAllFilieres()
-      .pipe(finalize(() => (this.isTableLoading = false)))
+      .pipe(finalize(() => {
+        this.isTableLoading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (data) => {
-          this.filieres = data;
+          this.filieres = Array.isArray(data) ? data : [];
           this.applyFilter();
-          this.cdr.detectChanges();
         },
-        error: () => {
-          this.errorMessage = 'Erreur lors du chargement des filières.';
-          this.cdr.detectChanges();
+        error: (err) => {
+          this.filieres = [];
+          this.filteredFilieres = [];
+          this.errorMessage = err?.message ?? 'Erreur lors du chargement des filières.';
         },
       });
   }
@@ -72,7 +75,7 @@ export class FiliereManagement implements OnInit {
     }
     const q = this.searchQuery.toLowerCase();
     this.filteredFilieres = this.filieres.filter(
-      f => f.name.toLowerCase().includes(q) || (f.description ?? '').toLowerCase().includes(q)
+      f => (f.name ?? '').toLowerCase().includes(q) || (f.description ?? '').toLowerCase().includes(q)
     );
   }
 

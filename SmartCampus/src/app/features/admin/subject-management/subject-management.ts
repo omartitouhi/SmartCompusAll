@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -31,7 +31,8 @@ export class SubjectManagement implements OnInit {
   constructor(
     private fb: FormBuilder,
     private subjectService: SubjectService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -50,13 +51,20 @@ export class SubjectManagement implements OnInit {
     this.isTableLoading = true;
     this.errorMessage = '';
     this.subjectService.getAllSubjects()
-      .pipe(finalize(() => (this.isTableLoading = false)))
+      .pipe(finalize(() => {
+        this.isTableLoading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (data) => {
-          this.subjects = data;
+          this.subjects = Array.isArray(data) ? data : [];
           this.applyFilter();
         },
-        error: () => (this.errorMessage = 'Erreur lors du chargement des matières.'),
+        error: () => {
+          this.subjects = [];
+          this.filteredSubjects = [];
+          this.errorMessage = 'Erreur lors du chargement des matières.';
+        },
       });
   }
 
@@ -67,7 +75,7 @@ export class SubjectManagement implements OnInit {
     }
     const q = this.searchQuery.toLowerCase();
     this.filteredSubjects = this.subjects.filter(
-      s => s.name.toLowerCase().includes(q) || (s.description ?? '').toLowerCase().includes(q)
+      s => (s.name ?? '').toLowerCase().includes(q) || (s.description ?? '').toLowerCase().includes(q)
     );
   }
 

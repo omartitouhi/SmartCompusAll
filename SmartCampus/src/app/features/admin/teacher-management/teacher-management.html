@@ -77,7 +77,7 @@
               <tr>
                 <td class="td-idx">{{ i + 1 }}</td>
                 <td class="td-name">
-                  <div class="avatar">{{ t.firstName[0] }}{{ t.lastName[0] }}</div>
+                  <div class="avatar">{{ t.firstName?.[0] ?? '?' }}{{ t.lastName?.[0] ?? '?' }}</div>
                   <span>{{ t.firstName }} {{ t.lastName }}</span>
                 </td>
                 <td class="td-email">{{ t.email }}</td>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, TimeoutError, catchError, throwError, timeout } from 'rxjs';
 
 export interface FiliereRequest {
   name: string;
@@ -20,7 +20,15 @@ export class FiliereService {
   constructor(private http: HttpClient) {}
 
   getAllFilieres(): Observable<Filiere[]> {
-    return this.http.get<Filiere[]>(this.baseUrl);
+    return this.http.get<Filiere[]>(this.baseUrl).pipe(
+      timeout(10000),
+      catchError((error) => {
+        if (error instanceof TimeoutError) {
+          return throwError(() => ({ message: 'Le chargement des filières a expiré. Vérifiez le backend / proxy API.' }));
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   getFiliereById(id: number): Observable<Filiere> {

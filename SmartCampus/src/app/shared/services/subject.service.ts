@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, TimeoutError, catchError, throwError, timeout } from 'rxjs';
 
 export interface SubjectRequest {
   name: string;
@@ -20,7 +20,15 @@ export class SubjectService {
   constructor(private http: HttpClient) {}
 
   getAllSubjects(): Observable<Subject[]> {
-    return this.http.get<Subject[]>(this.baseUrl);
+    return this.http.get<Subject[]>(this.baseUrl).pipe(
+      timeout(10000),
+      catchError((error) => {
+        if (error instanceof TimeoutError) {
+          return throwError(() => ({ message: 'Le chargement des matières a expiré. Vérifiez le backend / proxy API.' }));
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   getSubjectById(id: number): Observable<Subject> {

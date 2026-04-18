@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, TimeoutError, catchError, throwError, timeout } from 'rxjs';
 import { Subject } from './subject.service';
 
 export interface TeacherRequest {
@@ -29,7 +29,15 @@ export class TeacherService {
   constructor(private http: HttpClient) {}
 
   getAllTeachers(): Observable<TeacherResponse[]> {
-    return this.http.get<TeacherResponse[]>(this.baseUrl);
+    return this.http.get<TeacherResponse[]>(this.baseUrl).pipe(
+      timeout(10000),
+      catchError((error) => {
+        if (error instanceof TimeoutError) {
+          return throwError(() => ({ message: 'Le chargement des enseignants a expiré. Vérifiez le backend / proxy API.' }));
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   getTeacherById(id: number): Observable<TeacherResponse> {

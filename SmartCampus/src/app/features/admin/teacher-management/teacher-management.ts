@@ -64,16 +64,19 @@ export class TeacherManagement implements OnInit {
     this.isTableLoading = true;
     this.errorMessage = '';
     this.teacherService.getAllTeachers()
-      .pipe(finalize(() => (this.isTableLoading = false)))
+      .pipe(finalize(() => {
+        this.isTableLoading = false;
+        this.cdr.detectChanges();
+      }))
       .subscribe({
         next: (data) => {
-          this.teachers = data;
+          this.teachers = Array.isArray(data) ? data : [];
           this.applyFilter();
-          this.cdr.detectChanges();
         },
-        error: () => {
-          this.errorMessage = 'Erreur lors du chargement des enseignants.';
-          this.cdr.detectChanges();
+        error: (err) => {
+          this.teachers = [];
+          this.filteredTeachers = [];
+          this.errorMessage = err?.message ?? 'Erreur lors du chargement des enseignants.';
         },
       });
   }
@@ -108,11 +111,11 @@ export class TeacherManagement implements OnInit {
     }
     const q = this.searchQuery.toLowerCase();
     this.filteredTeachers = this.teachers.filter(t =>
-      t.firstName.toLowerCase().includes(q) ||
-      t.lastName.toLowerCase().includes(q) ||
-      t.email.toLowerCase().includes(q) ||
+      (t.firstName ?? '').toLowerCase().includes(q) ||
+      (t.lastName ?? '').toLowerCase().includes(q) ||
+      (t.email ?? '').toLowerCase().includes(q) ||
       (t.department ?? '').toLowerCase().includes(q) ||
-      (t.subjects ?? []).some(s => s.name.toLowerCase().includes(q))
+      (t.subjects ?? []).some(s => (s.name ?? '').toLowerCase().includes(q))
     );
   }
 

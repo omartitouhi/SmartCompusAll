@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -34,7 +34,6 @@ export class ScheduleManagement implements OnInit {
   subjects: Subject[] = [];
 
   days = DAYS;
-  dayLabels = DAY_LABELS;
 
   showForm = false;
   isEditing = false;
@@ -63,7 +62,8 @@ export class ScheduleManagement implements OnInit {
   constructor(
     private scheduleService: ScheduleService,
     private teacherService: TeacherService,
-    private subjectService: SubjectService
+    private subjectService: SubjectService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -73,12 +73,12 @@ export class ScheduleManagement implements OnInit {
   loadAll(): void {
     this.loading = true;
     this.scheduleService.getAllSchedules().subscribe({
-      next: (data) => { this.schedules = data; this.loading = false; },
-      error: () => { this.loading = false; }
+      next: (data) => { this.schedules = Array.isArray(data) ? data : []; this.loading = false; this.cdr.detectChanges(); },
+      error: () => { this.schedules = []; this.loading = false; this.cdr.detectChanges(); }
     });
-    this.scheduleService.getAllClasses().subscribe({ next: (data) => this.classes = data });
-    this.teacherService.getAllTeachers().subscribe({ next: (data) => this.teachers = data });
-    this.subjectService.getAllSubjects().subscribe({ next: (data) => this.subjects = data });
+    this.scheduleService.getAllClasses().subscribe({ next: (data) => { this.classes = Array.isArray(data) ? data : []; this.cdr.detectChanges(); } });
+    this.teacherService.getAllTeachers().subscribe({ next: (data) => { this.teachers = Array.isArray(data) ? data : []; this.cdr.detectChanges(); } });
+    this.subjectService.getAllSubjects().subscribe({ next: (data) => { this.subjects = Array.isArray(data) ? data : []; this.cdr.detectChanges(); } });
   }
 
   get filteredSchedules(): ScheduleResponse[] {
