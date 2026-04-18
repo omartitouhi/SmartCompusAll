@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -62,7 +62,8 @@ export class GradeManagement implements OnInit {
     private gradeService: GradeService,
     private scheduleService: ScheduleService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -102,9 +103,11 @@ export class GradeManagement implements OnInit {
         });
         this.myClasses = Array.from(classMap.values());
         this.mySubjects = Array.from(subjectMap.values());
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMsg = 'Impossible de charger les données.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -131,6 +134,7 @@ export class GradeManagement implements OnInit {
 
   loadStudentsForClass(classId: number): void {
     this.loadingStudents = true;
+    this.cdr.detectChanges();
     this.http.get<any[]>(`/api/admin/students/class/${classId}`).subscribe({
       next: (data) => {
         this.students = data.map(s => ({
@@ -141,17 +145,35 @@ export class GradeManagement implements OnInit {
           fullName: `${s.firstName} ${s.lastName}`,
         }));
         this.loadingStudents = false;
+        this.cdr.detectChanges();
       },
-      error: () => { this.loadingStudents = false; }
+      error: () => {
+        this.loadingStudents = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
   loadGrades(): void {
     if (!this.userId || !this.selectedClassId || !this.selectedSubjectId) return;
     this.loading = true;
+    this.cdr.detectChanges();
     this.gradeService.getGradesByClassAndSubject(this.userId, this.selectedClassId, this.selectedSubjectId).subscribe({
-      next: (data) => { this.grades = data; this.loading = false; },
-      error: () => { this.loading = false; }
+      next: (data) => {
+        const grades = Array.isArray(data) ? data : [];
+        // Keep newest evaluations first so row lookup shows the latest note per student.
+        this.grades = grades.sort((a, b) => {
+          const byDate = this.gradeDateRank(b) - this.gradeDateRank(a);
+          if (byDate !== 0) return byDate;
+          return (b.id ?? 0) - (a.id ?? 0);
+        });
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -223,8 +245,12 @@ export class GradeManagement implements OnInit {
           this.successMsg = 'Note modifiée avec succès.';
           this.showForm = false;
           this.loadGrades();
+          this.cdr.detectChanges();
         },
-        error: () => { this.errorMsg = 'Erreur lors de la modification.'; }
+        error: () => {
+          this.errorMsg = 'Erreur lors de la modification.';
+          this.cdr.detectChanges();
+        }
       });
     } else {
       this.gradeService.addGrade(this.userId, this.form).subscribe({
@@ -232,8 +258,12 @@ export class GradeManagement implements OnInit {
           this.successMsg = 'Note ajoutée avec succès.';
           this.showForm = false;
           this.loadGrades();
+          this.cdr.detectChanges();
         },
-        error: () => { this.errorMsg = 'Erreur lors de l\'ajout.'; }
+        error: () => {
+          this.errorMsg = 'Erreur lors de l\'ajout.';
+          this.cdr.detectChanges();
+        }
       });
     }
   }
@@ -244,13 +274,22 @@ export class GradeManagement implements OnInit {
       next: () => {
         this.successMsg = 'Note supprimée.';
         this.loadGrades();
+        this.cdr.detectChanges();
       },
-      error: () => { this.errorMsg = 'Erreur lors de la suppression.'; }
+      error: () => {
+        this.errorMsg = 'Erreur lors de la suppression.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
   getStudentGrade(studentId: number): GradeResponse | undefined {
     return this.grades.find(g => g.studentId === studentId);
+  }
+
+  private gradeDateRank(grade: GradeResponse): number {
+    const t = Date.parse(grade.evaluationDate);
+    return Number.isNaN(t) ? 0 : t;
   }
 
   gradeColor(value: number): string {
