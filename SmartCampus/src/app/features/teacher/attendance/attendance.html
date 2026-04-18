@@ -6,6 +6,12 @@
 
   @if (loadingSchedules) {
     <div class="loading">Chargement de l'emploi du temps...</div>
+  } @else if (error && schedules.length === 0) {
+    <div class="alert-error">{{ error }}</div>
+    <div class="empty-state">
+      <p>Impossible de récupérer vos créneaux pour le moment.</p>
+      <button class="btn-save-all" (click)="retryLoadSchedules()">Réessayer</button>
+    </div>
   } @else if (schedules.length === 0) {
     <div class="empty-state">
       <p>Vous n'avez aucun créneau assigné.</p>

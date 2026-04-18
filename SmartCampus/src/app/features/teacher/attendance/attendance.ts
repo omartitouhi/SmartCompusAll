@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
 import { ScheduleService, ScheduleResponse } from '../../../shared/services/schedule.service';
 import { AttendanceService, AttendanceResponse, AttendanceStatus } from '../../../shared/services/attendance.service';
+import { catchError, finalize, of, timeout } from 'rxjs';
 
 interface StudentAttendanceRow {
   studentId: number;
@@ -41,22 +42,46 @@ export class AttendanceComponent implements OnInit {
     private authService: AuthService,
     private scheduleService: ScheduleService,
     private attendanceService: AttendanceService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUserValue();
-    if (!user) { this.router.navigate(['/']); return; }
+    if (!user) {
+      this.loadingSchedules = false;
+      this.cdr.detectChanges();
+      this.router.navigate(['/']);
+      return;
+    }
     this.userId = user.id;
     this.loadSchedules();
   }
 
   loadSchedules(): void {
     this.loadingSchedules = true;
-    this.scheduleService.getTeacherSchedule(this.userId!).subscribe({
-      next: (data) => { this.schedules = data; this.loadingSchedules = false; },
-      error: () => { this.error = 'Impossible de charger l\'emploi du temps.'; this.loadingSchedules = false; }
-    });
+    this.error = '';
+    this.scheduleService.getTeacherSchedule(this.userId!)
+      .pipe(
+        timeout(10000),
+        catchError(() => {
+          this.error = 'Impossible de charger l\'emploi du temps.';
+          return of([] as ScheduleResponse[]);
+        }),
+        finalize(() => {
+          this.loadingSchedules = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.schedules = Array.isArray(data) ? data : [];
+        }
+      });
+  }
+
+  retryLoadSchedules(): void {
+    this.loadSchedules();
   }
 
   get selectedSchedule(): ScheduleResponse | null {
@@ -276,6 +301,6 @@ export class AttendanceComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/teacher/dashboard']);
+    this.router.navigate(['/teacher']);
   }
 }
