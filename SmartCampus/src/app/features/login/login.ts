@@ -4,6 +4,8 @@ import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } 
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { PasswordResetRequestService } from '../../shared/services/password-reset-request.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +30,8 @@ export class Login {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private passwordResetService: PasswordResetRequestService
+    private passwordResetService: PasswordResetRequestService,
+    private cdr: ChangeDetectorRef
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -37,31 +40,58 @@ export class Login {
   }
 
   submit(): void {
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      this.loginError = 'Veuillez saisir un email valide et votre mot de passe.';
+      this.cdr.detectChanges();
+      return;
+    }
 
     this.loading = true;
     this.loginError = '';
+    this.cdr.detectChanges();
 
     const { email, password } = this.loginForm.value;
 
-    this.authService.login({ email, password }).subscribe({
+    this.authService.login({ email, password })
+      .pipe(finalize(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
       next: (user) => {
         const targetRoute = this.getDashboardRoute(user.role);
         this.router.navigate([targetRoute]).then((navigated) => {
-          this.loading = false;
           if (!navigated) {
             this.loginError = 'Login succeeded but navigation failed.';
+            this.cdr.detectChanges();
           }
         }).catch(() => {
-          this.loading = false;
           this.loginError = 'Login succeeded but dashboard is unreachable.';
+          this.cdr.detectChanges();
         });
       },
       error: (err) => {
-        this.loading = false;
-        this.loginError = err?.error?.message ?? err?.message ?? 'Invalid email or password';
+        this.loginError = this.normalizeLoginError(err);
+        this.cdr.detectChanges();
       }
     });
+  }
+
+  isInvalid(field: 'email' | 'password'): boolean {
+    const control = this.loginForm.get(field);
+    return !!(control && control.invalid && control.touched);
+  }
+
+  private normalizeLoginError(err: any): string {
+    const status = err?.status;
+    if (status === 401 || status === 404) {
+      return 'Email ou mot de passe incorrect.';
+    }
+    if (status === 0) {
+      return 'Impossible de contacter le serveur.';
+    }
+    return err?.error?.message ?? err?.message ?? 'Email ou mot de passe incorrect.';
   }
 
   openForgotModal(): void {

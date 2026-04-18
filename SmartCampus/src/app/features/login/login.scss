@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
+
   background:
     //linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
     url("/images/large.webp");
@@ -21,7 +21,7 @@
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   text-align: center;
-  
+
 }
 
 .logo-container {
@@ -69,13 +69,37 @@
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
     }
+
+    &.input-invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12);
+    }
   }
+}
+
+.field-error {
+  margin: 6px 0 0;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.error {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  color: #9f1239;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
 }
 
 .login-btn {
   display: block;       /* مهم باش margin: auto يشتغل */
   margin: 10px auto 0 auto;
-  width: 107%;  
+  width: 107%;
   //margin-top: 10px;
   padding: 9px;
   border: none;
