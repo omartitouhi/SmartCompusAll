@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map, timeout } from 'rxjs';
 
 export interface CourseFileResponse {
   id: number;
@@ -26,7 +26,10 @@ export class CourseFileService {
   }
 
   getTeacherFiles(teacherUserId: number): Observable<CourseFileResponse[]> {
-    return this.http.get<CourseFileResponse[]>(`/api/teacher/${teacherUserId}/files`);
+    return this.http.get<unknown>(`/api/teacher/${teacherUserId}/files`).pipe(
+      timeout(10000),
+      map((data) => Array.isArray(data) ? data as CourseFileResponse[] : [])
+    );
   }
 
   deleteFile(teacherUserId: number, fileId: number): Observable<void> {
@@ -34,7 +37,10 @@ export class CourseFileService {
   }
 
   getStudentFiles(studentUserId: number): Observable<CourseFileResponse[]> {
-    return this.http.get<CourseFileResponse[]>(`/api/student/${studentUserId}/files`);
+    return this.http.get<unknown>(`/api/student/${studentUserId}/files`).pipe(
+      timeout(10000),
+      map((data) => Array.isArray(data) ? data as CourseFileResponse[] : [])
+    );
   }
 
   getDownloadUrl(studentUserId: number, fileId: number): string {

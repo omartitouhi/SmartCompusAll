@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -41,7 +41,8 @@ export class FileUpload implements OnInit {
     private authService: AuthService,
     private courseFileService: CourseFileService,
     private scheduleService: ScheduleService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -68,17 +69,32 @@ export class FileUpload implements OnInit {
         });
         this.myClasses = Array.from(classMap.entries()).map(([id, name]) => ({ id, name }));
         this.mySubjects = Array.from(subjectMap.entries()).map(([id, name]) => ({ id, name }));
+        this.cdr.detectChanges();
       },
-      error: () => {}
+      error: () => {
+        this.uploadError = 'Impossible de charger vos classes et matières.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
   loadFiles(): void {
     if (!this.userId) return;
     this.loadingFiles = true;
+    this.uploadError = '';
+    this.cdr.detectChanges();
     this.courseFileService.getTeacherFiles(this.userId).subscribe({
-      next: (data) => { this.files = data; this.loadingFiles = false; },
-      error: () => { this.loadingFiles = false; }
+      next: (data) => {
+        this.files = Array.isArray(data) ? data : [];
+        this.loadingFiles = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.files = [];
+        this.loadingFiles = false;
+        this.uploadError = 'Impossible de charger les supports de cours.';
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -111,10 +127,12 @@ export class FileUpload implements OnInit {
         const input = document.getElementById('fileInput') as HTMLInputElement;
         if (input) input.value = '';
         this.loadFiles();
+        this.cdr.detectChanges();
       },
       error: () => {
         this.uploading = false;
         this.uploadError = 'Erreur lors du dépôt du fichier.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -122,8 +140,14 @@ export class FileUpload implements OnInit {
   deleteFile(fileId: number, fileName: string): void {
     if (!this.userId || !confirm(`Supprimer "${fileName}" ?`)) return;
     this.courseFileService.deleteFile(this.userId, fileId).subscribe({
-      next: () => { this.loadFiles(); },
-      error: () => { this.uploadError = 'Erreur lors de la suppression.'; }
+      next: () => {
+        this.loadFiles();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.uploadError = 'Erreur lors de la suppression.';
+        this.cdr.detectChanges();
+      }
     });
   }
 

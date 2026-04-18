@@ -47,6 +47,7 @@ export class StudentFiles implements OnInit {
       },
       error: () => {
         this.error = 'Erreur lors du chargement des supports de cours.';
+        this.files = [];
         this.loading = false;
         this.cdr.detectChanges();
       }
