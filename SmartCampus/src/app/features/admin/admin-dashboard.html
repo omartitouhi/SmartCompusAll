@@ -1,0 +1,103 @@
+<div class="admin-dashboard-container">
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <!-- LEFT: logo -->
+    <div class="header-logo">
+      <img src="/images/smartCampus.png" alt="SmartCampus" class="logo-img" />
+    </div>
+
+    <!-- RIGHT: nav buttons → name → avatar -->
+    <div class="header-right">
+      <div class="header-actions">
+        <button class="btn-nav" (click)="navigateTo('/admin/students')">Étudiants</button>
+        <button class="btn-nav" (click)="navigateTo('/admin/teachers')">Enseignants</button>
+        <button class="btn-nav" (click)="navigateTo('/admin/filieres')">Filières</button>
+        <button class="btn-nav" (click)="navigateTo('/admin/subjects')">Matières</button>
+        <button class="btn-nav" (click)="navigateTo('/admin/schedules')">Emplois du Temps</button>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+
+      <h1>{{ adminFirstName }}</h1>
+
+      <!-- Bell notification -->
+      <div class="notif-wrap">
+        <button class="notif-btn" (click)="toggleNotif()" title="Demandes de réinitialisation">
+          🔔
+          <span class="notif-badge" [class.notif-badge--empty]="unseenCount === 0">
+            {{ unseenCount }}
+          </span>
+        </button>
+        @if (notifOpen) {
+          <div class="notif-dropdown">
+            <div class="notif-header">
+              <span class="notif-title">Demandes de mot de passe</span>
+              @if (unseenCount > 0) {
+                <span class="notif-count">{{ unseenCount }} nouvelle(s)</span>
+              }
+            </div>
+            @if (resetRequests.length === 0) {
+              <div class="notif-empty">Aucune demande</div>
+            }
+            @for (req of resetRequests; track req.id) {
+              <div class="notif-item" [class.notif-unseen]="!req.seen">
+                <div class="notif-email">{{ req.email }}</div>
+                <div class="notif-date">{{ req.requestedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                @if (!req.seen) {
+                  <button class="notif-mark-btn" (click)="markSeen(req.id)">Marquer vu</button>
+                } @else {
+                  <span class="notif-seen-label">Vu</span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Avatar cliquable -->
+      <div class="avatar-wrap">
+        <div class="avatar" (click)="toggleProfile()" title="Mon profil">
+          {{ adminName.charAt(0) }}
+        </div>
+        @if (profileOpen) {
+          <div class="profile-dropdown">
+            <div class="profile-header">
+              <div class="profile-avatar">{{ adminName.charAt(0) }}</div>
+              <div>
+                <div class="profile-name">{{ adminName }}</div>
+                <div class="profile-role">Administrateur</div>
+              </div>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-rows">
+              <div class="profile-row">
+                <span class="profile-label">Rôle</span>
+                <span class="profile-value">Administrateur</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    @for (card of dashboardCards; track card.route) {
+      <div
+        class="dashboard-card"
+        [style.border-left-color]="card.color"
+        (click)="navigateTo(card.route)">
+        <div class="card-icon">{{ card.icon }}</div>
+        <div class="card-content">
+          <h2>{{ card.title }}</h2>
+          <p>{{ card.description }}</p>
+        </div>
+        <div class="card-arrow">→</div>
+      </div>
+    }
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="dashboard-footer">
+    <span>© 2025 SmartCampus · Tous droits réservés</span>
+  </footer>
+</div>

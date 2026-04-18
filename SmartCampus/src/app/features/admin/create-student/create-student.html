@@ -1,0 +1,171 @@
+<div class="create-student-container">
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      ← Retour
+    </button>
+    <h1>Créer un Nouvel Étudiant</h1>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+
+      <!-- Alert Messages -->
+      @if (successMessage) {
+        <div class="alert alert-success">✓ {{ successMessage }}</div>
+      }
+      @if (errorMessage) {
+        <div class="alert alert-error">✗ {{ errorMessage }}</div>
+      }
+
+      <div class="form-grid">
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            [class.invalid]="isFieldInvalid('email')"
+            placeholder="exemple@smartcampus.com">
+          @if (isFieldInvalid('email')) {
+            <span class="error-text">Email valide requis</span>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Mot de passe *</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            [class.invalid]="isFieldInvalid('password')"
+            placeholder="Minimum 6 caractères">
+          @if (isFieldInvalid('password')) {
+            <span class="error-text">Minimum 6 caractères requis</span>
+          }
+        </div>
+
+        <!-- First Name -->
+        <div class="form-group">
+          <label for="firstName">Prénom *</label>
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            [class.invalid]="isFieldInvalid('firstName')"
+            placeholder="Prénom">
+          @if (isFieldInvalid('firstName')) {
+            <span class="error-text">Prénom requis</span>
+          }
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <label for="lastName">Nom *</label>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            [class.invalid]="isFieldInvalid('lastName')"
+            placeholder="Nom">
+          @if (isFieldInvalid('lastName')) {
+            <span class="error-text">Nom requis</span>
+          }
+        </div>
+
+        <!-- CIN -->
+        <div class="form-group">
+          <label for="cin">CIN *</label>
+          <input
+            type="text"
+            id="cin"
+            formControlName="cin"
+            [class.invalid]="isFieldInvalid('cin')"
+            placeholder="AB123456">
+          @if (isFieldInvalid('cin')) {
+            <span class="error-text">CIN requis</span>
+          }
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="form-group">
+          <label for="dateOfBirth">Date de naissance *</label>
+          <input
+            type="date"
+            id="dateOfBirth"
+            formControlName="dateOfBirth"
+            [class.invalid]="isFieldInvalid('dateOfBirth')">
+          @if (isFieldInvalid('dateOfBirth')) {
+            <span class="error-text">Date de naissance requise</span>
+          }
+        </div>
+
+        <!-- School Year -->
+        <div class="form-group">
+          <label for="schoolYear">Année Scolaire *</label>
+          <input
+            type="text"
+            id="schoolYear"
+            formControlName="schoolYear"
+            [class.invalid]="isFieldInvalid('schoolYear')"
+            placeholder="2025-2026">
+          @if (isFieldInvalid('schoolYear')) {
+            <span class="error-text">Année scolaire requise</span>
+          }
+        </div>
+
+        <!-- Level -->
+        <div class="form-group">
+          <label for="level">Niveau *</label>
+          <select
+            id="level"
+            formControlName="level"
+            [class.invalid]="isFieldInvalid('level')">
+            <option value="">Choisir un niveau</option>
+            @for (level of levels; track level.value) {
+              <option [value]="level.value">{{ level.label }}</option>
+            }
+          </select>
+          @if (isFieldInvalid('level')) {
+            <span class="error-text">Niveau requis</span>
+          }
+        </div>
+
+        <!-- Filière -->
+        <div class="form-group">
+          <label for="filiereName">Filière *</label>
+          <select
+            id="filiereName"
+            formControlName="filiereName"
+            [class.invalid]="isFieldInvalid('filiereName')">
+            <option value="">Choisir une filière</option>
+            @for (filiere of filieres; track filiere.id) {
+              <option [value]="filiere.name">{{ filiere.name }}</option>
+            }
+          </select>
+          @if (isFieldInvalid('filiereName')) {
+            <span class="error-text">Filière requise</span>
+          }
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="goBack()"
+          [disabled]="isLoading">
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="isLoading">
+          @if (isLoading) { Création en cours... } @else { Créer l'Étudiant }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,156 @@
+.grades-page {
+  min-height: 100vh;
+  background: #f0f4f8;
+  padding: 2rem;
+
+  // ── HEADER ──────────────────────────────────────────
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: white;
+    border-radius: 16px;
+    padding: 1.25rem 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+
+    .btn-back {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      &:hover { background: rgba(255,255,255,0.28); }
+    }
+
+    .page-title-block {
+      flex: 1;
+      min-width: 0;
+
+      .page-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+      }
+
+      .page-subtitle {
+        font-size: 0.88rem;
+        opacity: 0.8;
+        margin-top: 0.1rem;
+        display: block;
+      }
+    }
+
+    .overall-badge {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      padding: 0.35rem 1rem;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      strong { font-weight: 800; }
+    }
+  }
+
+  // ── STATES ──────────────────────────────────────────
+  .state-msg {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #9ca3af;
+    font-size: 1rem;
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  .state-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  // ── TABLE ──────────────────────────────────────────
+  .table-wrap {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    overflow-x: auto;
+  }
+
+  .notes-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+
+    thead tr {
+      border-bottom: 2px solid #e5e7eb;
+
+      th {
+        padding: 0.85rem 1rem;
+        text-align: left;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+        background: #f9fafb;
+
+        &.col-num { text-align: center; }
+        &.col-avg { color: #1d4ed8; }
+        &.col-subject { min-width: 200px; }
+      }
+    }
+
+    tbody {
+      .subject-row {
+        border-bottom: 1px solid #f0f4f8;
+        transition: background 0.15s;
+
+        &:last-child { border-bottom: none; }
+        &:hover { background: #f8faff; }
+
+        td {
+          padding: 0.9rem 1rem;
+          color: #374151;
+          vertical-align: middle;
+
+          &.col-num { text-align: center; }
+        }
+
+        .subject-name {
+          font-weight: 700;
+          color: #111827;
+          font-size: 0.92rem;
+        }
+
+        .avg-badge {
+          display: inline-block;
+          padding: 0.2rem 0.65rem;
+          border-radius: 10px;
+          font-weight: 700;
+          font-size: 0.88rem;
+
+          &.good    { background: #d1fae5; color: #065f46; }
+          &.average { background: #fef3c7; color: #92400e; }
+          &.fail    { background: #fee2e2; color: #991b1b; }
+          // no class = neutral (e.g. '—')
+        }
+      }
+    }
+  }
+}

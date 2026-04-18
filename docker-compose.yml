@@ -1,0 +1,68 @@
+services:
+
+  # ── MySQL Database ──────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: smart_campus_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Smart_Campus
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - smart_campus_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Spring Boot Backend ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./smartCampusBack
+      dockerfile: Dockerfile
+    container_name: smart_campus_backend
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/Smart_Campus?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+      SPRING_JPA_SHOW_SQL: "false"
+      SERVER_PORT: "8090"
+      SPRING_SESSION_STORE_TYPE: none
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - smart_campus_network
+
+  # ── Angular Frontend (nginx) ────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./SmartCampus
+      dockerfile: Dockerfile
+    container_name: smart_campus_frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - smart_campus_network
+
+volumes:
+  mysql_data:
+
+networks:
+  smart_campus_network:
+    driver: bridge

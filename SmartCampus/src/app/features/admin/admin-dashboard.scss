@@ -1,0 +1,464 @@
+.admin-dashboard-container {
+  min-height: 100vh;
+  background: #f0f2f5;
+  padding: 0;
+}
+
+// ---- HEADER ----
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: 0.6rem 1.5rem 0.6rem 2rem;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  gap: 1rem;
+
+  // ── LEFT: logo ──
+  .header-logo {
+    flex-shrink: 0;
+
+    .logo-img {
+      height: 46px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    }
+  }
+
+  // ── RIGHT: buttons → name → avatar ──
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.92;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-nav {
+    background: rgba(255,255,255,0.18);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 0.3rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    &:hover { background: rgba(255,255,255,0.3); }
+  }
+
+  .btn-logout {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 0.3rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+    &:hover { background: rgba(255,255,255,0.15); color: white; }
+  }
+
+  // ── Notification bell ──
+  .notif-wrap {
+    position: relative;
+  }
+
+  .notif-btn {
+    position: relative;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: white;
+    padding: 0;
+
+    &:hover { background: rgba(255,255,255,0.3); }
+  }
+
+  .notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    min-width: 17px;
+    height: 17px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+    border: 1.5px solid #1a1a2e;
+    transition: background 0.3s;
+
+    &.notif-badge--empty {
+      background: #6b7280;
+    }
+  }
+
+  .notif-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    z-index: 100;
+    overflow: hidden;
+    animation: fadeDown 0.18s ease;
+
+    .notif-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #1a1a2e, #0f3460);
+      color: white;
+
+      .notif-title {
+        font-size: 0.88rem;
+        font-weight: 700;
+      }
+
+      .notif-count {
+        font-size: 0.75rem;
+        background: #ef4444;
+        border-radius: 20px;
+        padding: 2px 8px;
+        font-weight: 600;
+      }
+    }
+
+    .notif-empty {
+      padding: 1.5rem;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.85rem;
+    }
+
+    .notif-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+
+      &.notif-unseen {
+        background: #eff6ff;
+      }
+
+      .notif-email {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .notif-date {
+        font-size: 0.75rem;
+        color: #9ca3af;
+      }
+
+      .notif-mark-btn {
+        margin-top: 4px;
+        align-self: flex-start;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s;
+
+        &:hover { background: #1d4ed8; }
+      }
+
+      .notif-seen-label {
+        font-size: 0.72rem;
+        color: #6b7280;
+        margin-top: 2px;
+      }
+    }
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    border: 1.5px solid rgba(255,255,255,0.45);
+    transition: border-color 0.2s, background 0.2s;
+
+    &:hover {
+      background: rgba(255,255,255,0.32);
+      border-color: rgba(255,255,255,0.7);
+    }
+  }
+
+  // ── Profile dropdown ──
+  .profile-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 260px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    z-index: 100;
+    overflow: hidden;
+    animation: fadeDown 0.18s ease;
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: linear-gradient(135deg, #1a1a2e, #0f3460);
+      color: white;
+
+      .profile-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .profile-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .profile-role {
+        font-size: 0.78rem;
+        opacity: 0.8;
+        margin-top: 2px;
+      }
+    }
+
+    .profile-divider {
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .profile-rows {
+      padding: 8px 0;
+
+      .profile-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        gap: 8px;
+
+        .profile-label {
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: #9ca3af;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .profile-value {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #1f2937;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ---- QUICK STATS ----
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  padding: 2rem 2.5rem 0;
+
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .stat-content {
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1;
+        margin-bottom: 0.2rem;
+      }
+
+      .stat-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+    }
+  }
+}
+
+// ---- CARDS GRID ----
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+  padding: 2rem 2.5rem;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 5px solid transparent;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.14);
+  }
+
+  .card-icon {
+    font-size: 2.75rem;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  .card-content {
+    flex: 1;
+
+    h2 {
+      margin: 0 0 0.3rem;
+      color: #1a1a2e;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+  }
+
+  .card-arrow {
+    font-size: 1.4rem;
+    color: #d1d5db;
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  &:hover .card-arrow {
+    transform: translateX(6px);
+    color: #9ca3af;
+  }
+}
+
+// ---- RESPONSIVE ----
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-wrap: wrap;
+    padding: 0.6rem 1rem;
+
+    .header-actions { flex-wrap: wrap; }
+    h1 { display: none; }
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+  }
+}
+
+// ---- FOOTER ----
+.dashboard-footer {
+  margin-top: 1rem;
+  padding: 1.1rem 2.5rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #9ca3af;
+  border-top: 1px solid #e5e7eb;
+  background: #f0f2f5;
+  letter-spacing: 0.02em;
+}

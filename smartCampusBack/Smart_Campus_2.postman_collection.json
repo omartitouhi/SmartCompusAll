@@ -1,0 +1,1026 @@
+{
+	"info": {
+		"_postman_id": "smart-campus-v2-2026",
+		"name": "Smart Campus 2",
+		"description": "Collection complète des APIs Smart Campus - L'admin choisit les spécialités par NOM (GLSI, Mathématiques, etc.) au lieu d'ID pour une meilleure UX frontend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@smartcampus.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Connexion utilisateur - Rôles disponibles: ADMIN, TEACHER, STUDENT"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Déconnexion utilisateur"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Specialties",
+			"item": [
+				{
+					"name": "Create Specialty",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"GLSI\",\n  \"description\": \"Génie Logiciel et Systèmes d'Information\",\n  \"type\": \"STUDENT\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties"
+							]
+						},
+						"description": "Créer une nouvelle spécialité pour étudiants (type: STUDENT)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Specialty - Cyber Security",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"CYBER SECURITY\",\n  \"description\": \"Cybersécurité et Protection des Systèmes\",\n  \"type\": \"STUDENT\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties"
+							]
+						},
+						"description": "Créer la spécialité Cyber Security pour étudiants"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Specialty - Mathématiques",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Mathématiques\",\n  \"description\": \"Mathématiques Appliquées\",\n  \"type\": \"TEACHER\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties"
+							]
+						},
+						"description": "Créer la spécialité Mathématiques pour les enseignants (type: TEACHER)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Specialty - Physique",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Physique\",\n  \"description\": \"Physique et Sciences Appliquées\",\n  \"type\": \"TEACHER\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties"
+							]
+						},
+						"description": "Créer la spécialité Physique pour les enseignants (type: TEACHER)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Specialty - Informatique",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Informatique\",\n  \"description\": \"Informatique et Programmation\",\n  \"type\": \"TEACHER\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties"
+							]
+						},
+						"description": "Créer la spécialité Informatique pour les enseignants (type: TEACHER)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Specialties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties"
+							]
+						},
+						"description": "Récupérer toutes les spécialités (étudiants et enseignants)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student Specialties Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties/type/STUDENT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties",
+								"type",
+								"STUDENT"
+							]
+						},
+						"description": "Récupérer uniquement les spécialités pour étudiants (GLSI, Cyber Security, etc.)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teacher Specialties Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties/type/TEACHER",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties",
+								"type",
+								"TEACHER"
+							]
+						},
+						"description": "Récupérer uniquement les spécialités pour enseignants (Mathématiques, Physique, etc.)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specialty by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties",
+								"1"
+							]
+						},
+						"description": "Récupérer une spécialité par son ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Specialty",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"GLSI Updated\",\n  \"description\": \"Génie Logiciel et Systèmes d'Information - Updated\",\n  \"type\": \"STUDENT\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties",
+								"1"
+							]
+						},
+						"description": "Mettre à jour une spécialité"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Specialty",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/specialties/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"specialties",
+								"1"
+							]
+						},
+						"description": "Supprimer une spécialité"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Students",
+			"item": [
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"student1@smartcampus.com\",\n  \"password\": \"student123\",\n  \"firstName\": \"Ahmed\",\n  \"lastName\": \"Benali\",\n  \"schoolYear\": \"2025-2026\",\n  \"dateOfBirth\": \"2005-05-15\",\n  \"cin\": \"AB123456\",\n  \"level\": \"FIRST_YEAR\",\n  \"specialtyName\": \"GLSI\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students"
+							]
+						},
+						"description": "Créer un nouvel étudiant - L'admin choisit une spécialité par son nom (GLSI, CYBER SECURITY, etc.)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Student - SECOND_YEAR",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"student2@smartcampus.com\",\n  \"password\": \"student123\",\n  \"firstName\": \"Fatima\",\n  \"lastName\": \"Zahra\",\n  \"schoolYear\": \"2025-2026\",\n  \"dateOfBirth\": \"2004-08-22\",\n  \"cin\": \"CD789012\",\n  \"level\": \"SECOND_YEAR\",\n  \"specialtyName\": \"CYBER SECURITY\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students"
+							]
+						},
+						"description": "Créer un étudiant de deuxième année en Cyber Security"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students"
+							]
+						},
+						"description": "Récupérer tous les étudiants"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"1"
+							]
+						},
+						"description": "Récupérer un étudiant par son ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Students by Class",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/class/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"class",
+								"1"
+							]
+						},
+						"description": "Récupérer tous les étudiants d'une classe spécifique"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?email=student1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "student1"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par email (recherche partielle)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?firstName=Ahmed&lastName=Benali",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "firstName",
+									"value": "Ahmed"
+								},
+								{
+									"key": "lastName",
+									"value": "Benali"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par prénom et nom (recherche partielle)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By CIN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?cin=AB123456",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "cin",
+									"value": "AB123456"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par CIN (recherche partielle)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By Level",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?level=FIRST_YEAR",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "level",
+									"value": "FIRST_YEAR"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par niveau (FIRST_YEAR, SECOND_YEAR, THIRD_YEAR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By Specialty",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?specialtyName=GLSI",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "specialtyName",
+									"value": "GLSI"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par nom de spécialité (recherche partielle)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By School Year",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?schoolYear=2025-2026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "schoolYear",
+									"value": "2025-2026"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par année scolaire (recherche partielle)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - By Class Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?className=A",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "className",
+									"value": "A"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants par nom de classe (recherche partielle)"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Students - Multiple Criteria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/search?specialtyName=GLSI&level=FIRST_YEAR&schoolYear=2025",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"search"
+							],
+							"query": [
+								{
+									"key": "specialtyName",
+									"value": "GLSI"
+								},
+								{
+									"key": "level",
+									"value": "FIRST_YEAR"
+								},
+								{
+									"key": "schoolYear",
+									"value": "2025"
+								}
+							]
+						},
+						"description": "Rechercher des étudiants avec plusieurs critères combinés (tous les paramètres sont optionnels)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"student1.updated@smartcampus.com\",\n  \"password\": \"newpassword123\",\n  \"firstName\": \"Ahmed\",\n  \"lastName\": \"Benali Updated\",\n  \"schoolYear\": \"2025-2026\",\n  \"dateOfBirth\": \"2005-05-15\",\n  \"cin\": \"AB123456\",\n  \"level\": \"SECOND_YEAR\",\n  \"specialtyName\": \"GLSI\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"1"
+							]
+						},
+						"description": "Mettre à jour un étudiant"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/students/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"students",
+								"1"
+							]
+						},
+						"description": "Supprimer un étudiant"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Teachers",
+			"item": [
+				{
+					"name": "Create Teacher - Mathématiques",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teacher.math@smartcampus.com\",\n  \"password\": \"teacher123\",\n  \"firstName\": \"Mohamed\",\n  \"lastName\": \"Tounsi\",\n  \"department\": \"Sciences\",\n  \"specialtyName\": \"Mathématiques\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers"
+							]
+						},
+						"description": "Créer un enseignant de Mathématiques - L'admin choisit une spécialité par son nom (Mathématiques, Physique, etc.)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Teacher - Physique",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teacher.physics@smartcampus.com\",\n  \"password\": \"teacher123\",\n  \"firstName\": \"Leila\",\n  \"lastName\": \"Mansour\",\n  \"department\": \"Sciences\",\n  \"specialtyName\": \"Physique\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers"
+							]
+						},
+						"description": "Créer un enseignant de Physique"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Teacher - Informatique",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teacher.cs@smartcampus.com\",\n  \"password\": \"teacher123\",\n  \"firstName\": \"Karim\",\n  \"lastName\": \"Ben Ahmed\",\n  \"department\": \"Informatique\",\n  \"specialtyName\": \"Informatique\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers"
+							]
+						},
+						"description": "Créer un enseignant d'Informatique - spécialité GLSI"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Teachers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers"
+							]
+						},
+						"description": "Récupérer tous les enseignants avec leur spécialité"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teacher by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers",
+								"1"
+							]
+						},
+						"description": "Récupérer un enseignant par son ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"teacher.updated@smartcampus.com\",\n  \"password\": \"newpassword123\",\n  \"firstName\": \"Mohamed\",\n  \"lastName\": \"Tounsi Updated\",\n  \"department\": \"Sciences Avancées\",\n  \"specialtyName\": \"Mathématiques\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers",
+								"1"
+							]
+						},
+						"description": "Mettre à jour un enseignant - possibilité de changer sa spécialité"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/teachers/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"teachers",
+								"1"
+							]
+						},
+						"description": "Supprimer un enseignant"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "adminEmail",
+			"value": "admin@smartcampus.com",
+			"type": "string"
+		},
+		{
+			"key": "adminPassword",
+			"value": "admin123",
+			"type": "string"
+		}
+	]
+}

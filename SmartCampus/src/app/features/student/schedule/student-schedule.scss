@@ -1,0 +1,279 @@
+// student-schedule.scss
+
+$gutter-w:    56px;
+$col-min-w:   130px;
+$hour-h:      56px;       // px per hour
+$header-h:    44px;
+$hours-count: 15;         // 08h → 23h = 15 intervals
+$total-h:     $hour-h * $hours-count; // 840px
+
+.schedule-page {
+  min-height: 100vh;
+  background: #f0f4f8;
+  padding: 1.5rem 1.5rem 3rem;
+  box-sizing: border-box;
+}
+
+// ── Top header bar ───────────────────────────────────────
+.sched-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+
+  .btn-back {
+    background: white;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+    &:hover { background: #f3f4f6; }
+  }
+
+  .week-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .nav-btn {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    padding: 0.42rem 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.15s;
+    &:hover { background: #3b82f6; }
+
+    &.today-btn {
+      font-size: 0.82rem;
+      padding: 0.42rem 0.9rem;
+    }
+  }
+
+  .week-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+// ── State messages ───────────────────────────────────────
+.state-msg {
+  text-align: center;
+  padding: 3rem;
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.state-error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+}
+
+// ── Calendar outer wrapper ───────────────────────────────
+// Single overflow-x container so header + body scroll together horizontally
+.cal-wrap {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  overflow: hidden;
+  // We manage scrolling inside
+}
+
+// ── Inner scroller (horizontal + vertical together) ──────
+.cal-scroller {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 130px);
+  // Min width so header and body always match
+  min-width: 100%;
+}
+
+// ── The full calendar table (header + body) ──────────────
+.cal-table {
+  display: flex;
+  flex-direction: column;
+  min-width: $gutter-w + $col-min-w * 7;
+}
+
+// ── Sticky day-header row ────────────────────────────────
+.cal-head {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: white;
+  border-bottom: 2px solid #d1d5db;
+
+  .gutter-corner {
+    flex: 0 0 $gutter-w;
+    min-width: $gutter-w;
+    border-right: 2px solid #d1d5db;
+    height: $header-h;
+    background: white;
+  }
+
+  .day-header {
+    flex: 1 1 0;
+    min-width: $col-min-w;
+    height: $header-h;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-right: 1px solid #e5e7eb;
+    box-sizing: border-box;
+
+    &.is-today {
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+  }
+}
+
+// ── Body row: gutter + day columns ──────────────────────
+.cal-body {
+  display: flex;
+  position: relative;
+}
+
+// ── Time gutter ──────────────────────────────────────────
+// Sticky left so it stays visible on horizontal scroll
+.time-gutter {
+  flex: 0 0 $gutter-w;
+  min-width: $gutter-w;
+  height: $total-h;
+  border-right: 2px solid #d1d5db;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: white;
+
+  .time-label-row {
+    // Each row = exactly $hour-h
+    height: $hour-h;
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;  // text at top = aligns with the hour line
+    justify-content: flex-end;
+    padding-top: 3px;
+    padding-right: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+    // No border here — lines come from day columns
+  }
+}
+
+// ── Day column ────────────────────────────────────────────
+.day-col {
+  flex: 1 1 0;
+  min-width: $col-min-w;
+  height: $total-h;
+  position: relative;
+  border-right: 1px solid #e5e7eb;
+  box-sizing: border-box;
+  background: white;
+
+  &.is-today {
+    background: rgba(219, 234, 254, 0.15);
+  }
+
+  // Full-hour lines (drawn per hour interval)
+  .hour-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    pointer-events: none;
+    background: #e5e7eb;
+
+    // The first line (top, 0%) should be slightly darker
+    &:first-child { background: #d1d5db; }
+  }
+
+  // Half-hour dashed lines
+  .half-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    pointer-events: none;
+    background: #f3f4f6;
+    border-top: 1px dashed #e5e7eb;
+  }
+}
+
+// ── Calendar event block ─────────────────────────────────
+.cal-event {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: 5px;
+  padding: 3px 5px;
+  color: white;
+  font-size: 0.72rem;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 5;
+  box-sizing: border-box;
+  min-height: 18px;
+
+  .ev-time {
+    font-size: 0.65rem;
+    opacity: 0.92;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ev-subject {
+    font-weight: 700;
+    font-size: 0.76rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ev-teacher {
+    font-size: 0.67rem;
+    opacity: 0.88;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ev-room {
+    font-size: 0.64rem;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,62 @@
+<div class="grades-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <button class="btn-back" (click)="goBack()">← Tableau de bord</button>
+    <div class="page-title-block">
+      <h1 class="page-title">Notes</h1>
+      @if (studentInfo) {
+        <span class="page-subtitle">{{ studentInfo.className }}</span>
+      }
+    </div>
+  </div>
+
+  <!-- LOADING / ERROR / EMPTY -->
+  @if (loading) {
+    <div class="state-msg">Chargement des notes...</div>
+  } @else if (error) {
+    <div class="state-error">{{ error }}</div>
+  } @else if (subjectRows.length === 0) {
+    <div class="state-msg">
+      <div class="empty-icon">📋</div>
+      <p>Aucune note enregistrée pour le moment.</p>
+    </div>
+  } @else {
+
+    <!-- NOTES TABLE -->
+    <div class="table-wrap">
+      <table class="notes-table">
+        <thead>
+          <tr>
+            <th class="col-subject">Unité / Matière</th>
+            <th class="col-num">Coef.</th>
+            <th class="col-num">Projet</th>
+            <th class="col-num">Examen</th>
+            <th class="col-num">Devoir</th>
+            <th class="col-num">Travaux Pratiques</th>
+            <th class="col-num col-avg">Moyenne</th>
+            <th class="col-num">Crédit Cap.</th>
+            <th class="col-num">Rattrapage</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of subjectRows; track row.subjectName) {
+            <tr class="subject-row">
+              <td class="col-subject subject-name">{{ row.subjectName }}</td>
+              <td class="col-num">{{ row.coef !== null ? row.coef : '—' }}</td>
+              <td class="col-num">{{ fmt(row.projet) }}</td>
+              <td class="col-num">{{ fmt(row.examen) }}</td>
+              <td class="col-num">{{ fmt(row.devoir) }}</td>
+              <td class="col-num">{{ fmt(row.tp) }}</td>
+              <td class="col-num col-avg">
+                <span class="avg-badge" [class]="gradeColor(+row.moyenne)">{{ row.moyenne }}</span>
+              </td>
+              <td class="col-num">—</td>
+              <td class="col-num">{{ row.rattrapage !== null ? row.rattrapage : '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

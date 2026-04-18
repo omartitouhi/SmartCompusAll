@@ -1,0 +1,117 @@
+<div class="attendance-page">
+  <div class="page-header">
+    <button class="btn-back" (click)="goBack()">← Retour</button>
+    <h1>Appel de présence</h1>
+  </div>
+
+  @if (loadingSchedules) {
+    <div class="loading">Chargement de l'emploi du temps...</div>
+  } @else if (schedules.length === 0) {
+    <div class="empty-state">
+      <p>Vous n'avez aucun créneau assigné.</p>
+    </div>
+  } @else {
+    <!-- CONTROLS -->
+    <div class="controls-card">
+      <div class="control-group">
+        <label>Créneau</label>
+        <select [(ngModel)]="selectedScheduleId" (ngModelChange)="onScheduleChange()">
+          <option [ngValue]="null" disabled>-- Choisir un créneau --</option>
+          @for (s of schedules; track s.id) {
+            <option [ngValue]="s.id">
+              {{ dayLabel(s.dayOfWeek) }} {{ formatTime(s.startTime) }}–{{ formatTime(s.endTime) }} · {{ s.subjectName }} ({{ s.className }})
+            </option>
+          }
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Date</label>
+        <input type="date" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange()" />
+      </div>
+    </div>
+
+    @if (selectedScheduleId) {
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <span class="quick-label">Marquer tous :</span>
+        <button class="btn-quick present" (click)="markAll('PRESENT')">Présent</button>
+        <button class="btn-quick absent" (click)="markAll('ABSENT')">Absent</button>
+        <button class="btn-quick late" (click)="markAll('LATE')">En retard</button>
+      </div>
+
+      @if (error) {
+        <div class="alert-error">{{ error }}</div>
+      }
+      @if (successMsg) {
+        <div class="alert-success">{{ successMsg }}</div>
+      }
+
+      @if (loading) {
+        <div class="loading">Chargement de la liste des étudiants...</div>
+      } @else if (rows.length === 0) {
+        <div class="empty-state">
+          <p>Aucun étudiant trouvé pour cette classe.</p>
+        </div>
+      } @else {
+        <!-- ATTENDANCE TABLE -->
+        <div class="attendance-table-wrap">
+          <table class="attendance-table">
+            <thead>
+              <tr>
+                <th>Étudiant</th>
+                <th>Statut</th>
+                <th>Commentaire</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows; track row.studentId) {
+                <tr [class.unsaved]="!row.saved">
+                  <td class="student-name">
+                    <div class="avatar-sm">{{ row.studentName.charAt(0) }}</div>
+                    {{ row.studentName }}
+                    @if (row.saved) {
+                      <span class="saved-badge">✓</span>
+                    }
+                  </td>
+                  <td>
+                    <div class="status-buttons">
+                      @for (opt of statusOptions; track opt) {
+                        <button
+                          class="status-btn"
+                          [class]="opt.toLowerCase()"
+                          [class.active]="row.status === opt"
+                          (click)="row.status = opt; row.saved = false">
+                          {{ statusLabel(opt) }}
+                        </button>
+                      }
+                    </div>
+                  </td>
+                  <td>
+                    <input
+                      class="comment-input"
+                      type="text"
+                      [(ngModel)]="row.comment"
+                      (input)="row.saved = false"
+                      placeholder="Commentaire..." />
+                  </td>
+                  <td>
+                    <button class="btn-save-row" (click)="saveRow(row)" [disabled]="row.saved">
+                      {{ row.saved ? 'Sauvegardé' : 'Sauvegarder' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="footer-actions">
+          <button class="btn-save-all" (click)="saveAll()" [disabled]="saving">
+            {{ saving ? 'Enregistrement...' : 'Tout enregistrer' }}
+          </button>
+        </div>
+      }
+    }
+  }
+</div>

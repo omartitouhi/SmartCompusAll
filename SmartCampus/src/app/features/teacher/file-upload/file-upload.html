@@ -1,0 +1,101 @@
+<div class="file-upload-page">
+  <!-- HEADER -->
+  <div class="page-header">
+    <button class="btn-back" (click)="goBack()">← Retour</button>
+    <h1>Supports de cours</h1>
+    <span class="teacher-name">{{ userName }}</span>
+  </div>
+
+  <!-- UPLOAD FORM -->
+  <div class="upload-card">
+    <h2>Déposer un fichier</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Classe</label>
+        <select [(ngModel)]="selectedClassId">
+          <option [ngValue]="null">— Sélectionner —</option>
+          @for (cls of myClasses; track cls.id) {
+            <option [ngValue]="cls.id">{{ cls.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Matière</label>
+        <select [(ngModel)]="selectedSubjectId">
+          <option [ngValue]="null">— Sélectionner —</option>
+          @for (sub of mySubjects; track sub.id) {
+            <option [ngValue]="sub.id">{{ sub.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fichier</label>
+        <input id="fileInput" type="file" (change)="onFileSelected($event)" />
+        @if (selectedFile) {
+          <span class="file-hint">{{ selectedFile.name }} ({{ formatSize(selectedFile.size) }})</span>
+        }
+      </div>
+      <div class="form-group form-group--action">
+        <button class="btn-upload" (click)="upload()" [disabled]="uploading">
+          @if (uploading) { Dépôt en cours... } @else { Déposer }
+        </button>
+      </div>
+    </div>
+    @if (uploadSuccess) {
+      <div class="alert-success">{{ uploadSuccess }}</div>
+    }
+    @if (uploadError) {
+      <div class="alert-error">{{ uploadError }}</div>
+    }
+  </div>
+
+  <!-- FILE LIST -->
+  <div class="files-section">
+    <div class="files-header">
+      <h2>Mes fichiers déposés</h2>
+      <div class="filters">
+        <select [(ngModel)]="filterClassId">
+          <option [ngValue]="null">Toutes les classes</option>
+          @for (cls of myClasses; track cls.id) {
+            <option [ngValue]="cls.id">{{ cls.name }}</option>
+          }
+        </select>
+        <select [(ngModel)]="filterSubjectId">
+          <option [ngValue]="null">Toutes les matières</option>
+          @for (sub of mySubjects; track sub.id) {
+            <option [ngValue]="sub.id">{{ sub.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    @if (loadingFiles) {
+      <div class="loading">Chargement...</div>
+    } @else if (filteredFiles.length === 0) {
+      <div class="empty-state">Aucun fichier déposé.</div>
+    } @else {
+      <div class="file-table">
+        <div class="file-row file-row--header">
+          <span>Nom du fichier</span>
+          <span>Matière</span>
+          <span>Classe</span>
+          <span>Taille</span>
+          <span>Déposé le</span>
+          <span></span>
+        </div>
+        @for (f of filteredFiles; track f.id) {
+          <div class="file-row">
+            <span class="file-name">{{ f.originalFileName }}</span>
+            <span>{{ f.subjectName }}</span>
+            <span>{{ f.className }}</span>
+            <span>{{ formatSize(f.fileSize) }}</span>
+            <span>{{ f.uploadedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span>
+              <button class="btn-delete" (click)="deleteFile(f.id, f.originalFileName)">Supprimer</button>
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="student-management-container">
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      ← Retour au Dashboard
+    </button>
+    <h1>Gestion des Étudiants</h1>
+  </div>
+
+  <div class="cards-grid">
+    <div 
+      *ngFor="let card of actionCards" 
+      class="action-card"
+      [style.border-left-color]="card.color"
+      (click)="navigateTo(card.route)">
+      <div class="card-icon">{{ card.icon }}</div>
+      <div class="card-content">
+        <h2>{{ card.title }}</h2>
+        <p>{{ card.description }}</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+  </div>
+</div>

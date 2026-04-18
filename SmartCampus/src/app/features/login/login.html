@@ -1,0 +1,91 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="/images/smartCampus.png" alt="SmartCampus Logo" />
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
+
+      <div class="form-group">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          formControlName="email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <input
+          type="password"
+          placeholder="Enter your password"
+          formControlName="password"
+          required
+        />
+      </div>
+
+      <button class="login-btn" type="submit" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+
+    </form>
+
+    <!-- Error message -->
+    @if (loginError) {
+      <p class="error">{{ loginError }}</p>
+    }
+
+    <p class="forgot-password">
+      <a (click)="openForgotModal()">Forgot your password?</a>
+    </p>
+
+    <div class="login-footer">
+      <p><strong>SmartCampus</strong> © 2026</p>
+      <p>All rights reserved.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── FORGOT PASSWORD MODAL ─────────────────────────── -->
+@if (showForgotModal) {
+  <div class="modal-overlay" (click)="closeForgotModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+
+      <button class="modal-close" (click)="closeForgotModal()" title="Fermer">✕</button>
+
+      <div class="modal-icon">🔑</div>
+      <h2 class="modal-title">Mot de passe oublié</h2>
+      <p class="modal-desc">
+        Saisissez votre adresse e-mail. L'administrateur recevra votre demande
+        et vous recontactera pour réinitialiser votre mot de passe.
+      </p>
+
+      @if (forgotSuccess) {
+        <div class="modal-success">{{ forgotSuccess }}</div>
+      } @else {
+        <div class="modal-form">
+          <input
+            type="email"
+            class="modal-input"
+            placeholder="Votre adresse e-mail"
+            [(ngModel)]="forgotEmail"
+          />
+          @if (forgotError) {
+            <p class="modal-error">{{ forgotError }}</p>
+          }
+          <button
+            class="modal-btn"
+            (click)="submitForgotRequest()"
+          >
+            Envoyer la demande
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+}

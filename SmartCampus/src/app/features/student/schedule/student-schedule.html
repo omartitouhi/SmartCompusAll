@@ -1,0 +1,85 @@
+<div class="schedule-page">
+
+  <!-- TOP HEADER -->
+  <div class="sched-header">
+    <button class="btn-back" (click)="goBack()">← Tableau de bord</button>
+    <div class="week-nav">
+      <button class="nav-btn" (click)="prevWeek()">&#8249;</button>
+      <button class="nav-btn" (click)="nextWeek()">&#8250;</button>
+      <button class="nav-btn today-btn" (click)="goToday()">Aujourd'hui</button>
+    </div>
+    <div class="week-label">{{ weekRangeLabel }}</div>
+  </div>
+
+  @if (loading) {
+    <div class="state-msg">Chargement de l'emploi du temps...</div>
+  } @else if (error) {
+    <div class="state-error">{{ error }}</div>
+  } @else {
+
+    <div class="cal-wrap">
+      <div class="cal-scroller">
+        <div class="cal-table">
+
+          <!-- DAY COLUMN HEADERS ROW (sticky top inside scroller) -->
+          <div class="cal-head">
+            <div class="gutter-corner"></div>
+            @for (day of weekDays; track day; let di = $index) {
+              <div class="day-header" [class.is-today]="isToday(di)">
+                {{ colDayLabel(di) }}
+              </div>
+            }
+          </div>
+
+          <!-- BODY: time gutter + day columns -->
+          <div class="cal-body">
+
+            <!-- TIME GUTTER (sticky left inside scroller) -->
+            <div class="time-gutter">
+              @for (h of hours; track h) {
+                <div class="time-label-row">{{ hourLabel(h) }}</div>
+              }
+            </div>
+
+            <!-- DAY COLUMNS -->
+            @for (day of weekDays; track day; let di = $index) {
+              <div class="day-col" [class.is-today]="isToday(di)">
+
+                <!-- Full-hour background lines -->
+                @for (h of hours; track h) {
+                  <div class="hour-line" [style.top.%]="hourLinePct(h)"></div>
+                  <div class="half-line" [style.top.%]="hourLinePct(h) + halfHourPct"></div>
+                }
+
+                <!-- Events (absolutely positioned) -->
+                @for (ev of getEventsForDay(day); track ev.schedule.id) {
+                  <div class="cal-event"
+                       [style.top.%]="ev.topPct"
+                       [style.height.%]="ev.heightPct"
+                       [style.background-color]="ev.color">
+                    <div class="ev-time">
+                      {{ formatTime(ev.schedule.startTime) }} – {{ formatTime(ev.schedule.endTime) }}
+                      ({{ ev.duration }})
+                    </div>
+                    <div class="ev-subject">{{ ev.schedule.subjectName }}</div>
+                    <div class="ev-teacher">{{ ev.schedule.teacherName }}</div>
+                    @if (ev.schedule.room) {
+                      <div class="ev-room">Salle {{ ev.schedule.room }}</div>
+                    } @else {
+                      <div class="ev-room">En Ligne</div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+          </div><!-- /.cal-body -->
+        </div><!-- /.cal-table -->
+      </div><!-- /.cal-scroller -->
+    </div><!-- /.cal-wrap -->
+
+    @if (schedules.length === 0) {
+      <div class="state-msg">Aucun créneau défini pour votre classe.</div>
+    }
+  }
+</div>

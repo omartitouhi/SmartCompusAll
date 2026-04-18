@@ -1,0 +1,154 @@
+<div class="sm-page">
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <div class="sm-header">
+    <button class="btn-back" (click)="goBack()">
+      <span class="btn-back__icon">‹</span> Dashboard
+    </button>
+    <div class="sm-header__title">
+      <span class="sm-header__icon">📚</span>
+      <div>
+        <h1>Gestion des Matières</h1>
+      </div>
+    </div>
+    @if (view === 'list') {
+      <button class="btn-primary" (click)="openCreate()">
+        <span>＋</span> Nouvelle matière
+      </button>
+    }
+  </div>
+
+  <!-- ── Global alerts (list view) ──────────────────────────── -->
+  @if (view === 'list') {
+    @if (successMessage) {
+      <div class="alert alert--success">✓ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="alert alert--error">✗ {{ errorMessage }}</div>
+    }
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       LIST VIEW
+       ══════════════════════════════════════════════════════════ -->
+  @if (view === 'list') {
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar__search">
+        <span class="toolbar__search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Rechercher par nom ou description…"
+          [value]="searchQuery"
+          (input)="onSearchChange($any($event.target).value)"
+        />
+      </div>
+      <span class="toolbar__count">{{ filteredSubjects.length }} matière(s)</span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      @if (isTableLoading) {
+        <div class="loader-row">
+          <div class="spinner"></div>
+          <span>Chargement…</span>
+        </div>
+      } @else if (filteredSubjects.length === 0) {
+        <div class="empty-state">
+          <span class="empty-state__icon">📭</span>
+          <p>Aucune matière trouvée.</p>
+          <button class="btn-primary" (click)="openCreate()">Créer la première</button>
+        </div>
+      } @else {
+        <table class="sm-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nom</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of filteredSubjects; track s.id; let i = $index) {
+              <tr>
+                <td class="td-idx">{{ i + 1 }}</td>
+                <td class="td-name">
+                  <span class="badge badge--subject">📚 {{ s.name }}</span>
+                </td>
+                <td class="td-desc">{{ s.description || '—' }}</td>
+                <td class="td-actions">
+                  @if (deleteConfirmId === s.id) {
+                    <div class="confirm-row">
+                      <span class="confirm-row__label">Confirmer ?</span>
+                      <button class="btn-danger btn-sm" (click)="onDelete(s.id!)">Oui</button>
+                      <button class="btn-ghost btn-sm" (click)="cancelDelete()">Non</button>
+                    </div>
+                  } @else {
+                    <button class="btn-edit btn-sm" (click)="openEdit(s)" title="Modifier">✏️</button>
+                    <button class="btn-danger btn-sm" (click)="confirmDelete(s.id!)" title="Supprimer">🗑️</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       CREATE / EDIT FORM
+       ══════════════════════════════════════════════════════════ -->
+  @if (view === 'create' || view === 'edit') {
+    <div class="form-card">
+      <div class="form-card__header">
+        <span class="form-card__icon">{{ view === 'create' ? '＋' : '✏️' }}</span>
+        <h2>{{ view === 'create' ? 'Nouvelle matière' : 'Modifier la matière' }}</h2>
+      </div>
+
+      @if (successMessage) {
+        <div class="alert alert--success">✓ {{ successMessage }}</div>
+      }
+      @if (errorMessage) {
+        <div class="alert alert--error">✗ {{ errorMessage }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Name -->
+        <div class="field" [class.field--error]="isInvalid('name')">
+          <label for="name">Nom de la matière <span class="req">*</span></label>
+          <input id="name" type="text" formControlName="name"
+                 placeholder="ex : Mathématiques" />
+          @if (isInvalid('name')) {
+            <span class="field__error">Nom requis (2 – 100 caractères)</span>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="field" [class.field--error]="isInvalid('description')">
+          <label for="description">Description</label>
+          <textarea id="description" formControlName="description" rows="3"
+                    placeholder="Description optionnelle (max 500 caractères)"></textarea>
+          @if (isInvalid('description')) {
+            <span class="field__error">500 caractères maximum</span>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" (click)="cancelForm()" [disabled]="isLoading">
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="isLoading">
+            @if (isLoading) { <span class="spinner spinner--sm"></span> Enregistrement… }
+            @else { {{ view === 'create' ? 'Créer' : 'Mettre à jour' }} }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+</div>

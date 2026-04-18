@@ -1,0 +1,145 @@
+<div class="teacher-dashboard">
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <!-- LEFT: logo -->
+    <div class="header-logo">
+      <img src="/images/smartCampus.png" alt="SmartCampus" class="logo-img" />
+    </div>
+
+    <!-- RIGHT: buttons → name → avatar -->
+    <div class="header-right">
+      <div class="header-actions">
+        <button class="btn-schedule" (click)="goToSchedule()">Emploi du Temps</button>
+        <button class="btn-files" (click)="goToFiles()">Supports de cours</button>
+        <button class="btn-notes" (click)="goToGrades()">Notes & Évaluations</button>
+        <button class="btn-attendance" (click)="goToAttendance()">Appel de présence</button>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+
+      <h1>{{ userFirstName }}</h1>
+
+      <!-- Avatar cliquable -->
+      <div class="avatar-wrap">
+        <div class="avatar" (click)="toggleProfile()" title="Mon profil">
+          {{ userName.charAt(0) }}
+        </div>
+        @if (profileOpen) {
+          <div class="profile-dropdown">
+            <div class="profile-header">
+              <div class="profile-avatar">{{ userName.charAt(0) }}</div>
+              <div>
+                <div class="profile-name">{{ userName }}</div>
+                <div class="profile-email">{{ userEmail }}</div>
+              </div>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-rows">
+              @if (teacherInfo) {
+                <div class="profile-row">
+                  <span class="profile-label">Département</span>
+                  <span class="profile-value">{{ teacherInfo.department || '—' }}</span>
+                </div>
+              }
+              <div class="profile-row">
+                <span class="profile-label">Matières</span>
+                <span class="profile-value">{{ uniqueSubjects.join(', ') || '—' }}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">Créneaux / semaine</span>
+                <span class="profile-value">{{ schedules.length }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMETABLE WIDGET CARD -->
+  <div class="widget-card widget-card--full">
+    <div class="widget-banner widget-banner--schedule">
+      <div class="widget-banner-icon">📅</div>
+      <div class="widget-banner-title">EMPLOI DU TEMPS — SEMAINE EN COURS</div>
+      <button class="widget-banner-link" (click)="goToSchedule()" title="Voir le calendrier complet">&#8599;</button>
+    </div>
+    <div class="widget-body widget-body--timetable">
+      @if (loading) {
+        <div class="loading">Chargement de l'emploi du temps...</div>
+      } @else if (error) {
+        <div class="alert-error">{{ error }}</div>
+      } @else if (schedules.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <p>Aucun créneau n'a encore été assigné.</p>
+        </div>
+      } @else {
+        <div class="timetable">
+          @for (day of days; track day) {
+            @let daySchedules = getScheduleForDay(day);
+            <div class="day-column" [class.has-slots]="daySchedules.length > 0">
+              <div class="day-header">{{ dayLabel(day) }}</div>
+              <div class="day-body">
+                @if (daySchedules.length === 0) {
+                  <div class="no-class">—</div>
+                } @else {
+                  @for (slot of daySchedules; track slot.id) {
+                    <div class="slot">
+                      <div class="slot-time">{{ formatTime(slot.startTime) }} – {{ formatTime(slot.endTime) }}</div>
+                      <div class="slot-subject">{{ slot.subjectName }}</div>
+                      <div class="slot-class">{{ slot.className }}</div>
+                      @if (slot.room) {
+                        <div class="slot-room">Salle {{ slot.room }}</div>
+                      }
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- WIDGETS: Supports de cours + Notes et évaluations -->
+  <div class="bottom-grid">
+
+    <!-- LEFT: Supports de cours -->
+    <div class="widget-card">
+      <div class="widget-banner widget-banner--files">
+        <div class="widget-banner-icon">📚</div>
+        <div class="widget-banner-title">SUPPORTS DE COURS</div>
+        <button class="widget-banner-link" (click)="goToFiles()" title="Gérer les supports">&#8599;</button>
+      </div>
+      <div class="widget-body">
+        <div class="widget-cta">
+          <p class="widget-cta-desc">Déposez et gérez les supports pédagogiques pour vos étudiants.</p>
+          <button class="btn-cta" (click)="goToFiles()">Accéder aux supports →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Notes et évaluations -->
+    <div class="widget-card">
+      <div class="widget-banner widget-banner--notes">
+        <div class="widget-banner-icon">📝</div>
+        <div class="widget-banner-title">NOTES ET ÉVALUATIONS</div>
+        <button class="widget-banner-link" (click)="goToGrades()" title="Gérer les notes">&#8599;</button>
+      </div>
+      <div class="widget-body">
+        <div class="widget-cta">
+          <p class="widget-cta-desc">Saisissez et consultez les notes et évaluations de vos étudiants.</p>
+          <button class="btn-cta" (click)="goToGrades()">Accéder aux notes →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="dashboard-footer">
+    <span>© 2025 SmartCampus · Tous droits réservés</span>
+  </footer>
+
+</div>

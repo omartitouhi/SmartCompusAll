@@ -1,0 +1,157 @@
+<div class="grade-page">
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <button class="btn-back" (click)="goBack()">&#8592; Retour</button>
+      <h1>Notes & Évaluations</h1>
+      <p>Enseignant : {{ userName }}</p>
+    </div>
+  </div>
+
+  <!-- ALERTS -->
+  @if (successMsg) {
+    <div class="alert alert-success">{{ successMsg }}</div>
+  }
+  @if (errorMsg) {
+    <div class="alert alert-error">{{ errorMsg }}</div>
+  }
+
+  <!-- FILTERS -->
+  <div class="filters-card">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Classe</label>
+        <select [(ngModel)]="selectedClassId" (change)="onClassChange()">
+          <option [ngValue]="null">-- Choisir une classe --</option>
+          @for (cls of myClasses; track cls.id) {
+            <option [ngValue]="cls.id">{{ cls.className }}</option>
+          }
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Matière</label>
+        <select [(ngModel)]="selectedSubjectId" (change)="onSubjectChange()">
+          <option [ngValue]="null">-- Choisir une matière --</option>
+          @for (sub of mySubjects; track sub.id) {
+            <option [ngValue]="sub.id">{{ sub.name }}</option>
+          }
+        </select>
+      </div>
+      @if (selectedClassId && selectedSubjectId) {
+        <div class="filter-actions">
+          <button class="btn-primary" (click)="openAddForm()">+ Ajouter une note</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ADD / EDIT FORM -->
+  @if (showForm) {
+    <div class="form-card">
+      <h2>{{ editingGradeId !== null ? 'Modifier la note' : 'Nouvelle note' }}</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Étudiant</label>
+          @if (editingGradeId !== null) {
+            <input type="text" [value]="editingStudentName" disabled />
+          } @else {
+            <select [(ngModel)]="form.studentId">
+              <option [ngValue]="0">-- Choisir un étudiant --</option>
+              @for (s of students; track s.id) {
+                <option [ngValue]="s.id">{{ s.fullName }}</option>
+              }
+            </select>
+          }
+        </div>
+        <div class="form-group">
+          <label>Type d'évaluation</label>
+          <select [(ngModel)]="form.evaluationType">
+            @for (type of evaluationTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Note (0 – 20)</label>
+          <input type="number" [(ngModel)]="form.value" min="0" max="20" step="0.25" />
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="form.evaluationDate" />
+        </div>
+        <div class="form-group full-width">
+          <label>Commentaire</label>
+          <input type="text" [(ngModel)]="form.comment" placeholder="Optionnel..." />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" (click)="cancelForm()">Annuler</button>
+        <button class="btn-primary" (click)="submitForm()">
+          {{ editingGradeId !== null ? 'Enregistrer' : 'Ajouter' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- RESULTS TABLE -->
+  @if (selectedClassId && selectedSubjectId) {
+    @if (loading) {
+      <div class="loading">Chargement des notes...</div>
+    } @else {
+      <div class="summary-bar">
+        <span>{{ grades.length }} note(s) enregistrée(s)</span>
+        <span class="avg-badge">Moyenne classe : <strong>{{ classAverage() }}/20</strong></span>
+      </div>
+
+      @if (students.length > 0) {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Étudiant</th>
+                <th>Note</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Commentaire</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (student of students; track student.id) {
+                @let g = getStudentGrade(student.id);
+                <tr>
+                  <td>{{ student.fullName }}</td>
+                  <td>
+                    @if (g) {
+                      <span class="grade-badge" [class]="gradeColor(g.value)">{{ g.value }}/20</span>
+                    } @else {
+                      <span class="no-grade">—</span>
+                    }
+                  </td>
+                  <td>{{ g?.evaluationType ?? '—' }}</td>
+                  <td>{{ g?.evaluationDate ?? '—' }}</td>
+                  <td class="comment-cell">{{ g?.comment ?? '—' }}</td>
+                  <td class="actions">
+                    @if (g) {
+                      <button class="btn-edit" (click)="openEditForm(g)">Modifier</button>
+                      <button class="btn-delete" (click)="deleteGrade(g.id)">Supprimer</button>
+                    } @else {
+                      <button class="btn-add-small" (click)="openAddFormForStudent(student.id)">+ Note</button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else if (!loadingStudents) {
+        <div class="empty-state">Aucun étudiant dans cette classe.</div>
+      }
+    }
+  } @else {
+    <div class="placeholder">
+      <div class="placeholder-icon">📝</div>
+      <p>Sélectionnez une classe et une matière pour gérer les notes.</p>
+    </div>
+  }
+</div>

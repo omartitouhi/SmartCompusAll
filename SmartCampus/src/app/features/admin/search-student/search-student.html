@@ -1,0 +1,270 @@
+<div class="search-student-container">
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      ← Retour
+    </button>
+    <h1>Rechercher et Gérer les Étudiants</h1>
+  </div>
+
+  <!-- Search Form -->
+  @if (!isEditing) {
+    <div class="search-card">
+      <h2>🔍 Critères de Recherche</h2>
+
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <div class="search-grid">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" formControlName="email" placeholder="exemple@smartcampus.com">
+          </div>
+
+          <div class="form-group">
+            <label for="firstName">Prénom</label>
+            <input type="text" id="firstName" formControlName="firstName" placeholder="Prénom">
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Nom</label>
+            <input type="text" id="lastName" formControlName="lastName" placeholder="Nom">
+          </div>
+
+          <div class="form-group">
+            <label for="cin">CIN</label>
+            <input type="text" id="cin" formControlName="cin" placeholder="AB123456">
+          </div>
+
+          <div class="form-group">
+            <label for="level">Niveau</label>
+            <select id="level" formControlName="level">
+              <option value="">Tous les niveaux</option>
+              @for (level of levels; track level.value) {
+                <option [value]="level.value">{{ level.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="filiereName">Filière</label>
+            <select id="filiereName" formControlName="filiereName">
+              <option value="">Toutes les filières</option>
+              @for (filiere of filieres; track filiere.id) {
+                <option [value]="filiere.name">{{ filiere.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="schoolYear">Année Scolaire</label>
+            <input type="text" id="schoolYear" formControlName="schoolYear" placeholder="2025-2026">
+          </div>
+
+          <div class="form-group">
+            <label for="className">Classe</label>
+            <input type="text" id="className" formControlName="className" placeholder="Nom de la classe">
+          </div>
+        </div>
+
+        <div class="search-actions">
+          <button type="button" class="btn-secondary" (click)="resetSearch()">
+            Réinitialiser
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="isLoading">
+            @if (isLoading) { Recherche... } @else { 🔍 Rechercher }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Alert Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success">✓ {{ successMessage }}</div>
+  }
+  @if (errorMessage) {
+    <div class="alert alert-error">✗ {{ errorMessage }}</div>
+  }
+
+  <!-- Results Table -->
+  @if (!isEditing && students.length > 0) {
+    <div class="results-card">
+      <h2>📋 Résultats ({{ students.length }} étudiant(s))</h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>CIN</th>
+              <th>Nom Complet</th>
+              <th>Email</th>
+              <th>Niveau</th>
+              <th>Filière</th>
+              <th>Classe</th>
+              <th>Année</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (student of students; track student.id) {
+              <tr>
+                <td>{{ student.cin }}</td>
+                <td>{{ student.firstName }} {{ student.lastName }}</td>
+                <td>{{ student.email }}</td>
+                <td>
+                  <span class="badge" [class]="'level-' + student.level">
+                    {{ getLevelLabel(student.level) }}
+                  </span>
+                </td>
+                <td>{{ student.filiereName }}</td>
+                <td>
+                  @if (student.className) {
+                    <span class="class-badge">{{ student.className }}</span>
+                  } @else {
+                    <span class="no-class">Non assignée</span>
+                  }
+                </td>
+                <td>{{ student.schoolYear }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn-edit" (click)="selectStudent(student)" title="Modifier">✏️</button>
+                    <button class="btn-delete" (click)="onDelete(student)" title="Supprimer">🗑️</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- Edit Form -->
+  @if (isEditing && selectedStudent) {
+    <div class="edit-card">
+      <h2>✏️ Modifier l'Étudiant: {{ selectedStudent.firstName }} {{ selectedStudent.lastName }}</h2>
+
+      <form [formGroup]="editForm" (ngSubmit)="onUpdate()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-email">Email *</label>
+            <input
+              type="email"
+              id="edit-email"
+              formControlName="email"
+              [class.invalid]="isFieldInvalid('email')">
+            @if (isFieldInvalid('email')) {
+              <span class="error-text">Email valide requis</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="edit-password">Nouveau mot de passe</label>
+            <input
+              type="password"
+              id="edit-password"
+              formControlName="password"
+              placeholder="Laisser vide pour ne pas changer">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-firstName">Prénom *</label>
+            <input
+              type="text"
+              id="edit-firstName"
+              formControlName="firstName"
+              [class.invalid]="isFieldInvalid('firstName')">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-lastName">Nom *</label>
+            <input
+              type="text"
+              id="edit-lastName"
+              formControlName="lastName"
+              [class.invalid]="isFieldInvalid('lastName')">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-cin">CIN *</label>
+            <input
+              type="text"
+              id="edit-cin"
+              formControlName="cin"
+              [class.invalid]="isFieldInvalid('cin')">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-dateOfBirth">Date de naissance *</label>
+            <input
+              type="date"
+              id="edit-dateOfBirth"
+              formControlName="dateOfBirth"
+              [class.invalid]="isFieldInvalid('dateOfBirth')">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-schoolYear">Année Scolaire *</label>
+            <input
+              type="text"
+              id="edit-schoolYear"
+              formControlName="schoolYear"
+              [class.invalid]="isFieldInvalid('schoolYear')">
+          </div>
+
+          <div class="form-group">
+            <label for="edit-level">Niveau *</label>
+            <select
+              id="edit-level"
+              formControlName="level"
+              [class.invalid]="isFieldInvalid('level')">
+              @for (level of levels; track level.value) {
+                <option [value]="level.value">{{ level.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-filiereName">Filière *</label>
+            <select
+              id="edit-filiereName"
+              formControlName="filiereName"
+              [class.invalid]="isFieldInvalid('filiereName')">
+              @for (filiere of filieres; track filiere.id) {
+                <option [value]="filiere.name">{{ filiere.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelEdit()"
+            [disabled]="isLoading">
+            Annuler
+          </button>
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="isLoading || editForm.invalid">
+            @if (isLoading) { Enregistrement... } @else { 💾 Enregistrer }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- No Results -->
+  @if (!isEditing && students.length === 0 && !isLoading) {
+    <div class="no-results">
+      <p>Aucun étudiant trouvé</p>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (isLoading && !isEditing) {
+    <div class="loading">
+      <p>Chargement...</p>
+    </div>
+  }
+</div>

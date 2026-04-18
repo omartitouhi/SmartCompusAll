@@ -1,0 +1,225 @@
+<div class="tm-page">
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <div class="tm-header">
+    <button class="btn-back" (click)="goBack()">
+      <span class="btn-back__icon">‹</span> Dashboard
+    </button>
+    <div class="tm-header__title">
+      <span class="tm-header__icon">👨‍🏫</span>
+      <div>
+        <h1>Gestion des Enseignants</h1>
+      </div>
+    </div>
+    @if (view === 'list') {
+      <button class="btn-primary" (click)="openCreate()">
+        <span>＋</span> Nouvel enseignant
+      </button>
+    }
+  </div>
+
+  <!-- ── Global alerts (list view) ──────────────────────────── -->
+  @if (view === 'list') {
+    @if (successMessage) {
+      <div class="alert alert--success">✓ {{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="alert alert--error">✗ {{ errorMessage }}</div>
+    }
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       LIST VIEW
+       ══════════════════════════════════════════════════════════ -->
+  @if (view === 'list') {
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar__search">
+        <span class="toolbar__search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Rechercher par nom, email, département ou matière…"
+          [value]="searchQuery"
+          (input)="onSearchChange($any($event.target).value)"
+        />
+      </div>
+      <span class="toolbar__count">{{ filteredTeachers.length }} enseignant(s)</span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      @if (isTableLoading) {
+        <div class="loader-row">
+          <div class="spinner"></div>
+          <span>Chargement…</span>
+        </div>
+      } @else if (filteredTeachers.length === 0) {
+        <div class="empty-state">
+          <span class="empty-state__icon">📭</span>
+          <p>Aucun enseignant trouvé.</p>
+          <button class="btn-primary" (click)="openCreate()">Créer le premier</button>
+        </div>
+      } @else {
+        <table class="tm-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nom complet</th>
+              <th>Email</th>
+              <th>Département</th>
+              <th>Matières</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of filteredTeachers; track t.id; let i = $index) {
+              <tr>
+                <td class="td-idx">{{ i + 1 }}</td>
+                <td class="td-name">
+                  <div class="avatar">{{ t.firstName[0] }}{{ t.lastName[0] }}</div>
+                  <span>{{ t.firstName }} {{ t.lastName }}</span>
+                </td>
+                <td class="td-email">{{ t.email }}</td>
+                <td class="td-dept">{{ t.department || '—' }}</td>
+                <td class="td-subjects">
+                  @if (t.subjects && t.subjects.length > 0) {
+                    @for (s of t.subjects; track s.id) {
+                      <span class="badge badge--teacher">{{ s.name }}</span>
+                    }
+                  } @else {
+                    <span class="td-none">—</span>
+                  }
+                </td>
+                <td class="td-actions">
+                  @if (deleteConfirmId === t.id) {
+                    <div class="confirm-row">
+                      <span class="confirm-row__label">Confirmer ?</span>
+                      <button class="btn-danger btn-sm" (click)="onDelete(t.id)">Oui</button>
+                      <button class="btn-ghost btn-sm" (click)="cancelDelete()">Non</button>
+                    </div>
+                  } @else {
+                    <button class="btn-edit btn-sm" (click)="openEdit(t)" title="Modifier">✏️</button>
+                    <button class="btn-danger btn-sm" (click)="confirmDelete(t.id)" title="Supprimer">🗑️</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════
+       CREATE / EDIT FORM
+       ══════════════════════════════════════════════════════════ -->
+  @if (view === 'create' || view === 'edit') {
+    <div class="form-card">
+      <div class="form-card__header">
+        <span class="form-card__icon">{{ view === 'create' ? '＋' : '✏️' }}</span>
+        <h2>{{ view === 'create' ? 'Nouvel enseignant' : 'Modifier l\'enseignant' }}</h2>
+      </div>
+
+      @if (successMessage) {
+        <div class="alert alert--success">✓ {{ successMessage }}</div>
+      }
+      @if (errorMessage) {
+        <div class="alert alert--error">✗ {{ errorMessage }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Row: Prénom / Nom -->
+        <div class="field-row">
+          <div class="field" [class.field--error]="isInvalid('firstName')">
+            <label for="firstName">Prénom <span class="req">*</span></label>
+            <input id="firstName" type="text" formControlName="firstName" placeholder="ex : Mohammed" />
+            @if (isInvalid('firstName')) {
+              <span class="field__error">Prénom requis</span>
+            }
+          </div>
+          <div class="field" [class.field--error]="isInvalid('lastName')">
+            <label for="lastName">Nom <span class="req">*</span></label>
+            <input id="lastName" type="text" formControlName="lastName" placeholder="ex : Alami" />
+            @if (isInvalid('lastName')) {
+              <span class="field__error">Nom requis</span>
+            }
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field" [class.field--error]="isInvalid('email')">
+          <label for="email">Email <span class="req">*</span></label>
+          <input id="email" type="email" formControlName="email" placeholder="ex : m.alami@smartcampus.ma" />
+          @if (isInvalid('email')) {
+            <span class="field__error">Email valide requis</span>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="field" [class.field--error]="isInvalid('password')">
+          <label for="password">
+            Mot de passe
+            @if (view === 'create') { <span class="req">*</span> }
+            @if (view === 'edit') { <span class="field__hint">(laisser vide pour ne pas modifier)</span> }
+          </label>
+          <input id="password" type="password" formControlName="password"
+                 placeholder="{{ view === 'create' ? 'Minimum 6 caractères' : 'Nouveau mot de passe (optionnel)' }}" />
+          @if (isInvalid('password')) {
+            <span class="field__error">Minimum 6 caractères</span>
+          }
+        </div>
+
+        <!-- Département -->
+        <div class="field">
+          <label for="department">Département</label>
+          <input id="department" type="text" formControlName="department"
+                 placeholder="ex : Informatique" />
+        </div>
+
+        <!-- Matières (checkboxes) -->
+        <div class="field">
+          <label>Matières enseignées</label>
+          @if (subjectsLoading) {
+            <div class="spinner spinner--sm"></div>
+          } @else if (allSubjects.length === 0) {
+            <p class="field__hint">Aucune matière disponible.</p>
+          } @else {
+            <div class="checkbox-grid">
+              @for (subject of allSubjects; track subject.id) {
+                <label class="checkbox-item" [class.checkbox-item--checked]="isSubjectSelected(subject.name)">
+                  <input
+                    type="checkbox"
+                    [checked]="isSubjectSelected(subject.name)"
+                    (change)="toggleSubject(subject.name)"
+                  />
+                  <span>{{ subject.name }}</span>
+                </label>
+              }
+            </div>
+          }
+          @if (selectedSubjectNames.length > 0) {
+            <div class="selected-subjects">
+              @for (name of selectedSubjectNames; track name) {
+                <span class="badge badge--teacher">{{ name }}</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" (click)="cancelForm()" [disabled]="isLoading">
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="isLoading">
+            @if (isLoading) { <span class="spinner spinner--sm"></span> Enregistrement… }
+            @else { {{ view === 'create' ? 'Créer' : 'Mettre à jour' }} }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+</div>

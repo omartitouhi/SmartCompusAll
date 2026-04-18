@@ -1,0 +1,268 @@
+.grade-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .page-header {
+    margin-bottom: 2rem;
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: #3b82f6;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 0.5rem;
+      display: block;
+      &:hover { text-decoration: underline; }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin: 0 0 0.25rem;
+    }
+
+    p { color: #6b7280; margin: 0; }
+  }
+
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+
+    &.alert-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    &.alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  }
+
+  .filters-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+
+    .filter-row {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+
+      label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      select {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        min-width: 220px;
+        background: white;
+        &:focus { outline: none; border-color: #3b82f6; }
+      }
+    }
+
+    .filter-actions { margin-top: auto; }
+  }
+
+  .form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+
+    h2 { margin: 0 0 1.25rem; font-size: 1.2rem; color: #1a1a2e; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .full-width { grid-column: 1 / -1; }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+
+      label { font-size: 0.85rem; font-weight: 600; color: #374151; }
+
+      select, input {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: #1f2937;
+        background: white;
+        &:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+        &:disabled { background: #f3f4f6; color: #6b7280; }
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+  }
+
+  .summary-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+
+    .avg-badge {
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+  }
+
+  .table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        background: #f8fafc;
+        border-bottom: 2px solid #e5e7eb;
+
+        th {
+          padding: 0.85rem 1rem;
+          text-align: left;
+          font-size: 0.78rem;
+          font-weight: 700;
+          color: #6b7280;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.15s;
+
+        &:last-child { border-bottom: none; }
+        &:hover { background: #f9fafb; }
+
+        td {
+          padding: 0.85rem 1rem;
+          font-size: 0.9rem;
+          color: #374151;
+        }
+
+        .comment-cell {
+          color: #9ca3af;
+          font-style: italic;
+          max-width: 200px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  .grade-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+
+    &.good    { background: #d1fae5; color: #065f46; }
+    &.average { background: #fef3c7; color: #92400e; }
+    &.fail    { background: #fee2e2; color: #991b1b; }
+  }
+
+  .no-grade { color: #d1d5db; font-size: 1.1rem; }
+
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .loading, .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #9ca3af;
+  }
+
+  .placeholder {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #9ca3af;
+
+    .placeholder-icon { font-size: 3rem; margin-bottom: 1rem; }
+    p { font-size: 1rem; }
+  }
+
+  // Buttons
+  .btn-primary {
+    background: #3b82f6; color: white; border: none;
+    padding: 0.55rem 1.1rem; border-radius: 8px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #2563eb; }
+  }
+
+  .btn-secondary {
+    background: white; color: #374151; border: 1px solid #d1d5db;
+    padding: 0.55rem 1.1rem; border-radius: 8px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #f9fafb; }
+  }
+
+  .btn-edit {
+    background: #f59e0b; color: white; border: none;
+    padding: 0.3rem 0.65rem; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #d97706; }
+  }
+
+  .btn-delete {
+    background: #ef4444; color: white; border: none;
+    padding: 0.3rem 0.65rem; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #dc2626; }
+  }
+
+  .btn-add-small {
+    background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+    padding: 0.3rem 0.65rem; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #dbeafe; }
+  }
+}

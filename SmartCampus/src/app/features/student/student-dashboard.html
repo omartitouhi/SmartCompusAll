@@ -1,0 +1,208 @@
+<div class="student-dashboard">
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <!-- LEFT: logo -->
+    <div class="header-logo">
+      <img src="/images/smartCampus.png" alt="SmartCampus" class="logo-img" />
+    </div>
+
+    <!-- RIGHT: buttons → name → avatar -->
+    <div class="header-right">
+      <div class="header-actions">
+        <button class="btn-schedule" (click)="goToSchedule()">Emploi du Temps</button>
+        <button class="btn-notes" (click)="goToGrades()">Mes Notes</button>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+
+      <h1>{{ userFirstName }}</h1>
+
+      <!-- Avatar cliquable -->
+      <div class="avatar-wrap">
+        <div class="avatar" (click)="toggleProfile()" title="Mon profil">
+          {{ userName.charAt(0) }}
+        </div>
+        <!-- Dropdown profil -->
+        @if (profileOpen && studentInfo) {
+          <div class="profile-dropdown">
+            <div class="profile-header">
+              <div class="profile-avatar">{{ userName.charAt(0) }}</div>
+              <div>
+                <div class="profile-name">{{ userName }}</div>
+                <div class="profile-email">{{ userEmail }}</div>
+              </div>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-rows">
+              <div class="profile-row">
+                <span class="profile-label">Filière</span>
+                <span class="profile-value">{{ studentInfo.filiereName }}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">Classe</span>
+                <span class="profile-value">{{ studentInfo.className }}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">Niveau</span>
+                <span class="profile-value">{{ formatLevel(studentInfo.level) }}</span>
+              </div>
+              <div class="profile-row">
+                <span class="profile-label">Année scolaire</span>
+                <span class="profile-value">{{ studentInfo.schoolYear }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMETABLE WIDGET CARD -->
+  <div class="widget-card widget-card--full">
+    <div class="widget-banner widget-banner--schedule">
+      <div class="widget-banner-icon">📅</div>
+      <div class="widget-banner-title">EMPLOI DU TEMPS — SEMAINE EN COURS</div>
+      <button class="widget-banner-link" (click)="goToSchedule()" title="Voir le calendrier complet">&#8599;</button>
+    </div>
+    <div class="widget-body widget-body--timetable">
+      @if (loading) {
+        <div class="loading">Chargement de l'emploi du temps...</div>
+      } @else if (error) {
+        <div class="alert-error">{{ error }}</div>
+      } @else if (schedules.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <p>Aucun créneau n'a encore été défini pour votre classe.</p>
+        </div>
+      } @else {
+        <div class="timetable">
+          @for (day of days; track day) {
+            @let daySchedules = getScheduleForDay(day);
+            <div class="day-column" [class.has-slots]="daySchedules.length > 0">
+              <div class="day-header">{{ dayLabel(day) }}</div>
+              <div class="day-body">
+                @if (daySchedules.length === 0) {
+                  <div class="no-class">—</div>
+                } @else {
+                  @for (slot of daySchedules; track slot.id) {
+                    <div class="slot">
+                      <div class="slot-time">{{ formatTime(slot.startTime) }} – {{ formatTime(slot.endTime) }}</div>
+                      <div class="slot-subject">{{ slot.subjectName }}</div>
+                      <div class="slot-teacher">{{ slot.teacherName }}</div>
+                      @if (slot.room) {
+                        <div class="slot-room">Salle {{ slot.room }}</div>
+                      }
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- RECENT GRADES + COURSE FILES side by side -->
+  <div class="bottom-grid">
+
+    <!-- LEFT: Dernières Notes -->
+    <div class="widget-card">
+      <div class="widget-banner widget-banner--notes">
+        <div class="widget-banner-icon">📝</div>
+        <div class="widget-banner-title">DERNIÈRES NOTES</div>
+        <button class="widget-banner-link" (click)="goToGrades()" title="Voir toutes mes notes">&#8599;</button>
+      </div>
+      <div class="widget-body">
+        @if (loading) {
+          <div class="widget-loading">Chargement...</div>
+        } @else if (recentGrades.length === 0) {
+          <div class="widget-empty">Aucune note enregistrée pour le moment.</div>
+        } @else {
+          @for (g of recentGrades; track g.id) {
+            <div class="wn-row">
+              <div class="wn-subject">{{ g.subjectName }}</div>
+              <div class="wn-type">{{ formatEvalType(g.evaluationType) }}</div>
+              <div class="wn-val" [class]="gradeColor(g.value)">{{ g.value }}/20</div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- RIGHT: Supports de cours -->
+    <div class="widget-card">
+      <div class="widget-banner widget-banner--files">
+        <div class="widget-banner-icon">📚</div>
+        <div class="widget-banner-title">DERNIERS SUPPORTS DE COURS</div>
+        <button class="widget-banner-link" (click)="goToFiles()" title="Voir tous les supports">&#8599;</button>
+      </div>
+      <div class="widget-body">
+        @if (loading) {
+          <div class="widget-loading">Chargement...</div>
+        } @else if (courseFiles.length === 0) {
+          <div class="widget-empty">Aucun support de cours disponible.</div>
+        } @else {
+          @for (f of courseFiles.slice(0, 5); track f.id) {
+            <a class="wf-row" [href]="getDownloadUrl(f.id)" target="_blank" rel="noopener">
+              <div class="wf-info">
+                <div class="wf-name">{{ f.originalFileName }}</div>
+                <div class="wf-teacher">{{ f.teacherName }}</div>
+                <div class="wf-date">📅 {{ formatDate(f.uploadedAt) }}</div>
+              </div>
+            </a>
+          }
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ATTENDANCE -->
+  <div class="section-title attendance-title">Mes Présences</div>
+
+  @if (loading) {
+    <div class="loading">Chargement des présences...</div>
+  } @else if (attendanceRecords.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <p>Aucun relevé de présence pour le moment.</p>
+    </div>
+  } @else {
+    <div class="attendance-stats">
+      <div class="att-stat present">
+        <div class="att-count">{{ attendanceStats.present }}</div>
+        <div class="att-label">Présent</div>
+      </div>
+      <div class="att-stat late">
+        <div class="att-count">{{ attendanceStats.late }}</div>
+        <div class="att-label">En retard</div>
+      </div>
+      <div class="att-stat absent">
+        <div class="att-count">{{ attendanceStats.absent }}</div>
+        <div class="att-label">Absent</div>
+      </div>
+      <div class="att-stat rate">
+        <div class="att-count">{{ attendanceStats.rate }}%</div>
+        <div class="att-label">Taux de présence</div>
+      </div>
+    </div>
+    <div class="attendance-list">
+      @for (r of attendanceRecords; track r.id) {
+        <div class="att-row">
+          <div class="att-date">{{ r.date }}</div>
+          <div class="att-subject">{{ r.subjectName }}</div>
+          <div class="att-time">{{ r.startTime.substring(0,5) }}–{{ r.endTime.substring(0,5) }}</div>
+          <div class="att-status" [class]="attendanceStatusClass(r.status)">{{ attendanceStatusLabel(r.status) }}</div>
+          @if (r.comment) {
+            <div class="att-comment">{{ r.comment }}</div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- FOOTER -->
+  <footer class="dashboard-footer">
+    <span>© 2025 SmartCampus · Tous droits réservés</span>
+  </footer>
+</div>

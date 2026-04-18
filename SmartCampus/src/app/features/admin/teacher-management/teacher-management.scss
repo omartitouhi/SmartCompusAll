@@ -1,0 +1,467 @@
+// ─── Design tokens ───────────────────────────────────────────────────────────
+$primary:       #667eea;
+$primary-dark:  #5a6fd6;
+$primary-light: #eef0fd;
+$teacher-color: #2196F3;
+$teacher-light: #e3f2fd;
+$danger:        #e53935;
+$danger-bg:     #fdecea;
+$success:       #2e7d32;
+$success-bg:    #e8f5e9;
+$gray-50:       #fafafa;
+$gray-100:      #f5f5f5;
+$gray-200:      #eeeeee;
+$gray-400:      #bdbdbd;
+$gray-600:      #757575;
+$gray-800:      #424242;
+$radius:        10px;
+$shadow-sm:     0 2px 8px rgba(0,0,0,.08);
+$shadow-md:     0 4px 16px rgba(0,0,0,.12);
+
+// ─── Page shell ──────────────────────────────────────────────────────────────
+.tm-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+// ─── Header ──────────────────────────────────────────────────────────────────
+.tm-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    flex: 1;
+
+    h1 {
+      color: #fff;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0 0 .2rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,.2);
+    }
+    p {
+      color: rgba(255,255,255,.85);
+      margin: 0;
+      font-size: .95rem;
+    }
+  }
+
+  &__icon {
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+}
+
+// ─── Back button ─────────────────────────────────────────────────────────────
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 8px;
+  padding: .55rem 1.1rem;
+  font-size: .9rem;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background .2s;
+  white-space: nowrap;
+
+  &:hover { background: rgba(255,255,255,.28); }
+  &__icon { font-size: 1.3rem; line-height: 1; }
+}
+
+// ─── Alerts ──────────────────────────────────────────────────────────────────
+.alert {
+  border-radius: $radius;
+  padding: .85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+  font-size: .95rem;
+
+  &--success { background: $success-bg; color: $success; border-left: 4px solid $success; }
+  &--error   { background: $danger-bg;  color: $danger;  border-left: 4px solid $danger;  }
+}
+
+// ─── Toolbar ─────────────────────────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border-radius: $radius;
+  padding: .85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: $shadow-sm;
+  flex-wrap: wrap;
+
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex: 1;
+    min-width: 220px;
+
+    &-icon { font-size: 1.1rem; }
+
+    input {
+      border: none;
+      outline: none;
+      font-size: .95rem;
+      width: 100%;
+      color: $gray-800;
+
+      &::placeholder { color: $gray-400; }
+    }
+  }
+
+  &__count {
+    font-size: .85rem;
+    color: $gray-600;
+    white-space: nowrap;
+    background: $gray-100;
+    padding: .3rem .8rem;
+    border-radius: 20px;
+  }
+}
+
+// ─── Table wrapper ────────────────────────────────────────────────────────────
+.table-wrapper {
+  background: #fff;
+  border-radius: $radius;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+}
+
+.tm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+
+  th {
+    background: $gray-50;
+    color: $gray-600;
+    font-weight: 600;
+    text-align: left;
+    padding: .9rem 1.1rem;
+    border-bottom: 2px solid $gray-200;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: .85rem 1.1rem;
+    border-bottom: 1px solid $gray-100;
+    color: $gray-800;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover { background: $gray-50; }
+}
+
+// ─── Cell helpers ─────────────────────────────────────────────────────────────
+.td-idx      { color: $gray-400; font-size: .8rem; width: 40px; }
+.td-name     { display: flex; align-items: center; gap: .65rem; font-weight: 600; min-width: 160px; }
+.td-email    { color: $gray-600; font-size: .85rem; }
+.td-dept     { font-size: .85rem; }
+.td-actions  { white-space: nowrap; }
+.td-subjects { display: flex; flex-wrap: wrap; gap: .3rem; max-width: 260px; }
+.td-none     { color: $gray-400; font-size: .85rem; }
+
+// ─── Checkbox grid (subject multi-select) ─────────────────────────────────────
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: .5rem;
+  margin-top: .4rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .75rem;
+  border: 1.5px solid $gray-200;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: .875rem;
+  color: $gray-800;
+  transition: border-color .15s, background .15s;
+  user-select: none;
+
+  input[type="checkbox"] {
+    width: auto;
+    padding: 0;
+    border: none;
+    accent-color: $teacher-color;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  &:hover { border-color: $teacher-color; background: $teacher-light; }
+
+  &--checked {
+    border-color: $teacher-color;
+    background: $teacher-light;
+    color: $teacher-color;
+    font-weight: 600;
+  }
+}
+
+.selected-subjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin-top: .6rem;
+}
+
+// ─── Avatar initials ──────────────────────────────────────────────────────────
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $teacher-color, $primary);
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+// ─── Badge ────────────────────────────────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .25rem .7rem;
+  border-radius: 20px;
+  font-size: .8rem;
+  font-weight: 600;
+
+  &--teacher { background: $teacher-light; color: $teacher-color; }
+}
+
+// ─── Loader / empty ───────────────────────────────────────────────────────────
+.loader-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+  padding: 3rem;
+  color: $gray-600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 2rem;
+
+  &__icon { font-size: 3rem; display: block; margin-bottom: .75rem; }
+
+  p {
+    color: $gray-600;
+    margin: 0 0 1.25rem;
+    font-size: 1rem;
+  }
+}
+
+// ─── Spinner ─────────────────────────────────────────────────────────────────
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid $gray-200;
+  border-top-color: $primary;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+
+  &--sm { width: 14px; height: 14px; border-width: 2px; display: inline-block; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ─── Confirm delete row ───────────────────────────────────────────────────────
+.confirm-row {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  flex-wrap: nowrap;
+
+  &__label {
+    font-size: .8rem;
+    color: $danger;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: linear-gradient(135deg, $primary, $primary-dark);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: .7rem 1.4rem;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); box-shadow: $shadow-md; }
+  &:disabled { opacity: .55; cursor: not-allowed; }
+}
+
+.btn-sm {
+  padding: .35rem .65rem;
+  border: none;
+  border-radius: 6px;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: all .2s;
+  font-weight: 500;
+}
+
+.btn-edit   { background: $primary-light; color: $primary-dark;
+              &:hover { background: color-mix(in srgb, $primary-light 92%, black); transform: translateY(-1px); } }
+.btn-danger { background: $danger-bg; color: $danger;
+              &:hover { background: color-mix(in srgb, $danger-bg 92%, black); transform: translateY(-1px); } }
+.btn-ghost  { background: $gray-100; color: $gray-600; border: 1px solid $gray-200;
+              border-radius: 8px; padding: .7rem 1.4rem; font-size: .95rem; font-weight: 500;
+              cursor: pointer; transition: background .2s;
+              &:hover:not(:disabled) { background: $gray-200; }
+              &:disabled { opacity: .55; cursor: not-allowed; } }
+
+// ─── Form card ────────────────────────────────────────────────────────────────
+.form-card {
+  background: #fff;
+  border-radius: $radius;
+  box-shadow: $shadow-md;
+  padding: 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid $gray-100;
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: $gray-800;
+    }
+  }
+
+  &__icon {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+}
+
+// ─── Form fields ──────────────────────────────────────────────────────────────
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 540px) { grid-template-columns: 1fr; }
+}
+
+.field {
+  margin-bottom: 1.25rem;
+
+  label {
+    display: block;
+    font-size: .875rem;
+    font-weight: 600;
+    color: $gray-800;
+    margin-bottom: .4rem;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: .65rem .9rem;
+    border: 1.5px solid $gray-200;
+    border-radius: 8px;
+    font-size: .95rem;
+    color: $gray-800;
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color .2s;
+    outline: none;
+
+    &:focus { border-color: $primary; }
+    &::placeholder { color: $gray-400; }
+  }
+
+  select { appearance: auto; cursor: pointer; }
+
+  &--error input,
+  &--error select,
+  &--error textarea { border-color: $danger; }
+
+  &__error {
+    display: block;
+    margin-top: .3rem;
+    font-size: .8rem;
+    color: $danger;
+    font-weight: 500;
+  }
+
+  &__hint {
+    font-size: .75rem;
+    color: $gray-600;
+    font-weight: 400;
+    margin-left: .4rem;
+  }
+}
+
+.req { color: $danger; margin-left: .15rem; }
+
+// ─── Form actions ─────────────────────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid $gray-100;
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .tm-page { padding: 1rem; }
+
+  .tm-header {
+    h1 { font-size: 1.4rem; }
+  }
+
+  .tm-table {
+    font-size: .8rem;
+
+    th, td { padding: .6rem .75rem; }
+  }
+
+  .td-email { display: none; }
+  .td-dept  { display: none; }
+}
